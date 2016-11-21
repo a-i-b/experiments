@@ -1,6 +1,10 @@
 # Experiments
 Testing of RabbitMQ features
 
+Docs:
+
+https://habrahabr.ru/post/262069/
+
 RPC: http://localhost:8080/rpc/call?name=Haha
 
 Publish-Subscribe: http://localhost:8080/pubsub/call?name=Haha
