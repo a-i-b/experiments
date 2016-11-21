@@ -13,16 +13,8 @@ public class Consumer {
 	
 	@RabbitListener(queues = "q.rpc")
     public Reply onMessage(Request message) {
-    	String result = "Hallo, " + message.getName();
-        
-    	logger.info(result);
-    	
-        try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-        
+    	String result = "Hallo, " + message.getName();        
+    	logger.info(result);    	
         Reply replyMessage = new Reply();
         replyMessage.setGreeting(result);
                 

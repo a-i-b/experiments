@@ -13,6 +13,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,18 +27,8 @@ public class RabbitConfigPubsub {
 	final static String QueueNameC2 = "q.c2"; 
 	final static String FanoutExchangeName = "exchange_pubsub"; 
 	
-	@Bean
-    public ConnectionFactory connectionFactory() {
-		CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
-        connectionFactory.setUsername("guest");
-        connectionFactory.setPassword("guest");
-        return connectionFactory;
-    }
-
-    @Bean
-    public AmqpAdmin amqpAdmin() {
-        return new RabbitAdmin(connectionFactory());
-    }
+	@Autowired
+	private ConnectionFactory cachingConnectionFactory;
 
     @Bean
     public MessageConverter jsonMessageConverter(){
@@ -46,7 +37,7 @@ public class RabbitConfigPubsub {
     
     @Bean
     public RabbitTemplate rabbitPubsubTemplate() {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
         template.setExchange(FanoutExchangeName);
         template.setReplyTimeout(30*1000);
         template.setMessageConverter(jsonMessageConverter());

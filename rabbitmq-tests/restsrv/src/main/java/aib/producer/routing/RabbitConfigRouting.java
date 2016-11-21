@@ -14,6 +14,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,19 +28,9 @@ public class RabbitConfigRouting {
 	final static String QueueNameDicom = "q.dicom"; 
 	final static String DirectExchangeName = "exchange_direct"; 
 	
-	@Bean
-    public ConnectionFactory connectionFactory() {
-		CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
-        connectionFactory.setUsername("guest");
-        connectionFactory.setPassword("guest");
-        return connectionFactory;
-    }
-
-    @Bean
-    public AmqpAdmin amqpAdmin() {
-        return new RabbitAdmin(connectionFactory());
-    }
-
+	@Autowired
+	private ConnectionFactory cachingConnectionFactory;
+	
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new JsonMessageConverter();
@@ -47,7 +38,7 @@ public class RabbitConfigRouting {
     
     @Bean
     public RabbitTemplate rabbitRoutingTemplate() {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
         template.setExchange(DirectExchangeName);
         template.setReplyTimeout(30*1000);
         template.setMessageConverter(jsonMessageConverter());

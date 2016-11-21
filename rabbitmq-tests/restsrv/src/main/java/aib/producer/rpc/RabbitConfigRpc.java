@@ -10,6 +10,7 @@ import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,20 +21,10 @@ public class RabbitConfigRpc {
 	static Logger logger = Logger.getLogger(RabbitConfigRpc.class);
 	
 	final static String QueueNameRpc = "q.rpc"; 
+
+	@Autowired
+	private ConnectionFactory cachingConnectionFactory;
 	
-	@Bean
-    public ConnectionFactory connectionFactory() {
-		CachingConnectionFactory connectionFactory = new CachingConnectionFactory("localhost");
-        connectionFactory.setUsername("guest");
-        connectionFactory.setPassword("guest");
-        return connectionFactory;
-    }
-
-    @Bean
-    public AmqpAdmin amqpAdmin() {
-        return new RabbitAdmin(connectionFactory());
-    }
-
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new JsonMessageConverter();
@@ -41,7 +32,7 @@ public class RabbitConfigRpc {
     
     @Bean
     public RabbitTemplate rabbitRpcTemplate() {
-        RabbitTemplate template = new RabbitTemplate(connectionFactory());
+        RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
         template.setQueue(QueueNameRpc);
         template.setReplyTimeout(30*1000);
         template.setMessageConverter(jsonMessageConverter());
