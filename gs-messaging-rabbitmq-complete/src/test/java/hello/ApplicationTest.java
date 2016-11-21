@@ -42,7 +42,7 @@ public class ApplicationTest {
     @Test
     public void test() throws Exception {
         rabbitTemplate.convertAndSend(Application.queueName, "Hello from RabbitMQ!");
-        receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
+        receiver.getLatch().await(20000, TimeUnit.MILLISECONDS);
     }
 
 }
