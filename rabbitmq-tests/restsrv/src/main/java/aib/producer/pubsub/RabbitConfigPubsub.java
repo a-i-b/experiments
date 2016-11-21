@@ -18,9 +18,9 @@ import org.springframework.context.annotation.Configuration;
 
 @EnableRabbit
 @Configuration
-public class RabbitMqConfig {
+public class RabbitConfigPubsub {
 	
-	static Logger logger = Logger.getLogger(RabbitMqConfig.class);
+	static Logger logger = Logger.getLogger(RabbitConfigPubsub.class);
 	
 	final static String QueueNameC1 = "q.c1"; 
 	final static String QueueNameC2 = "q.c2"; 
