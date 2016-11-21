@@ -1,0 +1,2 @@
+include   ':contracts', ':restsrv', ':msgsrv'
+project(':contracts').projectDir = new File('contracts')
