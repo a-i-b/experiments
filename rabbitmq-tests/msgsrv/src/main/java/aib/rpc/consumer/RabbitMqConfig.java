@@ -16,29 +16,9 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMqConfig {
 	
 	static Logger logger = Logger.getLogger(RabbitMqConfig.class);
-	
-	public static String RpcQueueName = "q.rpc"; 
-	
-	@Autowired
-	private ConnectionFactory cachingConnectionFactory;
-	
+		
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new JsonMessageConverter();
     }
-/*    
-    @Bean
-    public RabbitTemplate rabbitTemplate() {
-        RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
-        template.setQueue(RpcQueueName);
-        template.setReplyTimeout(30*1000);
-        template.setMessageConverter(jsonMessageConverter());
-        return template;
-    }
-
-    @Bean
-    public Queue myQueue() {
-       return new Queue(RpcQueueName);
-    }	
-*/
 }
