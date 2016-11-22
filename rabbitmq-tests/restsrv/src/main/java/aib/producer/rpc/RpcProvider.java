@@ -1,5 +1,7 @@
 package aib.producer.rpc;
 
+import javax.annotation.Resource;
+
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -14,8 +16,8 @@ import aib.rpc.producer.contract.Request;
 @RequestMapping("/rpc")
 public class RpcProvider {
 	
-	@Autowired
-	ApplicationContext context;
+	@Resource
+	RabbitTemplate rabbitRpcTemplate;
 	
 	@RequestMapping("/call")
     public String greeting(@RequestParam(value="name", defaultValue="World") String name) {		
@@ -25,8 +27,7 @@ public class RpcProvider {
 		String result;
 		
 		try {
-			RabbitTemplate rabbitTemplate = (RabbitTemplate) context.getBean("rabbitRpcTemplate");
-			Reply reply = (Reply)rabbitTemplate.convertSendAndReceive(RabbitConfigRpc.QueueNameRpc, request);
+			Reply reply = (Reply)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueNameRpc, request);
 			result = reply.getGreeting();
 		} catch(Exception e) {
 			result = e.getMessage();

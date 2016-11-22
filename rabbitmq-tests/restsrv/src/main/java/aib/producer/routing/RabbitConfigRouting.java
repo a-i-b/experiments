@@ -31,17 +31,15 @@ public class RabbitConfigRouting {
 	@Autowired
 	private ConnectionFactory cachingConnectionFactory;
 	
-    @Bean
-    public MessageConverter jsonMessageConverter(){
-        return new JsonMessageConverter();
-    }
-    
+	@Autowired
+	private MessageConverter jsonMessageConverter;
+	
     @Bean
     public RabbitTemplate rabbitRoutingTemplate() {
         RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
         template.setExchange(DirectExchangeName);
         template.setReplyTimeout(30*1000);
-        template.setMessageConverter(jsonMessageConverter());
+        template.setMessageConverter(jsonMessageConverter);
         return template;
     }
 
@@ -51,22 +49,22 @@ public class RabbitConfigRouting {
     }       
 
     @Bean
-    public Queue QueueNameC1() {
+    public Queue QueueNameHl7() {
        return new Queue(QueueNameHl7);
     }
 
     @Bean
-    public Queue QueueNameC2() {
+    public Queue QueueNameDicom() {
        return new Queue(QueueNameDicom);
     }
     
     @Bean
-    public Binding binding1(){
-        return BindingBuilder.bind(QueueNameC1()).to(directExchange()).with("hl7");
+    public Binding binding1r(){
+        return BindingBuilder.bind(QueueNameHl7()).to(directExchange()).with("hl7");
     }
 
     @Bean
-    public Binding binding2(){
-        return BindingBuilder.bind(QueueNameC2()).to(directExchange()).with("dicom");
+    public Binding binding2r(){
+        return BindingBuilder.bind(QueueNameDicom()).to(directExchange()).with("dicom");
     }
 }

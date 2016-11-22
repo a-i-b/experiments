@@ -26,7 +26,7 @@ public class RabbitMqConfig {
     public MessageConverter jsonMessageConverter(){
         return new JsonMessageConverter();
     }
-    
+/*    
     @Bean
     public RabbitTemplate rabbitTemplate() {
         RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
@@ -40,4 +40,5 @@ public class RabbitMqConfig {
     public Queue myQueue() {
        return new Queue(RpcQueueName);
     }	
+*/
 }

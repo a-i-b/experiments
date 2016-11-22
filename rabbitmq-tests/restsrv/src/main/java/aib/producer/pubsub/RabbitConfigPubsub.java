@@ -30,17 +30,15 @@ public class RabbitConfigPubsub {
 	@Autowired
 	private ConnectionFactory cachingConnectionFactory;
 
-    @Bean
-    public MessageConverter jsonMessageConverter(){
-        return new JsonMessageConverter();
-    }
-    
+	@Autowired
+	private MessageConverter jsonMessageConverter;
+
     @Bean
     public RabbitTemplate rabbitPubsubTemplate() {
         RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
         template.setExchange(FanoutExchangeName);
         template.setReplyTimeout(30*1000);
-        template.setMessageConverter(jsonMessageConverter());
+        template.setMessageConverter(jsonMessageConverter);
         return template;
     }
 

@@ -25,17 +25,16 @@ public class RabbitConfigRpc {
 	@Autowired
 	private ConnectionFactory cachingConnectionFactory;
 	
-    @Bean
-    public MessageConverter jsonMessageConverter(){
-        return new JsonMessageConverter();
-    }
+	@Autowired
+	private MessageConverter jsonMessageConverter;
+
     
     @Bean
     public RabbitTemplate rabbitRpcTemplate() {
         RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
         template.setQueue(QueueNameRpc);
         template.setReplyTimeout(30*1000);
-        template.setMessageConverter(jsonMessageConverter());
+        template.setMessageConverter(jsonMessageConverter);
         return template;
     }
 
