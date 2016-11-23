@@ -1,7 +1,5 @@
 package aib.producer.pubsub;
 
-import javax.annotation.Resource;
-
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,8 +11,11 @@ import aib.rpc.producer.contract.Request;
 @RequestMapping("/pubsub")
 public class PubsubProvider {
 	
-	@Resource
 	RabbitTemplate rabbitPubsubTemplate;
+	
+	public PubsubProvider(RabbitTemplate rabbitPubsubTemplate) {
+		this.rabbitPubsubTemplate = rabbitPubsubTemplate;
+	}
 	
 	@RequestMapping("/call")
 	public void publisher(@RequestParam(value="name", defaultValue="World") String name) {

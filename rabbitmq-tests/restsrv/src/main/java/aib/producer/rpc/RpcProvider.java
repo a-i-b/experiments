@@ -1,10 +1,6 @@
 package aib.producer.rpc;
 
-import javax.annotation.Resource;
-
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,8 +12,11 @@ import aib.rpc.producer.contract.Request;
 @RequestMapping("/rpc")
 public class RpcProvider {
 	
-	@Resource
 	RabbitTemplate rabbitRpcTemplate;
+	
+	public RpcProvider(RabbitTemplate rabbitRpcTemplate) {
+		this.rabbitRpcTemplate = rabbitRpcTemplate;
+	}
 	
 	@RequestMapping("/call")
     public String greeting(@RequestParam(value="name", defaultValue="World") String name) {		
