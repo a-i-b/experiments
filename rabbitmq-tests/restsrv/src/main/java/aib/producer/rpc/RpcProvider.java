@@ -19,19 +19,11 @@ public class RpcProvider {
 	}
 	
 	@RequestMapping("/call")
-    public String greeting(@RequestParam(value="name", defaultValue="World") String name) {		
+    public Reply greeting(@RequestParam(value="name", defaultValue="World") String name) {		
 		Request request = new Request();
 		request.setName(name);
 		
-		String result;
-		
-		try {
-			Reply reply = (Reply)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueNameRpc, request);
-			result = reply.getGreeting();
-		} catch(Exception e) {
-			result = e.getMessage();
-		}
-		
-		return result;
+		Reply reply = (Reply)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueNameRpc, request);		
+		return reply;
     }
 }
