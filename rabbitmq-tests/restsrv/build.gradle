@@ -30,5 +30,6 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-amqp')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.codehaus.jackson:jackson-mapper-asl:1.9.13')
+	compile('org.springframework.boot:spring-boot-starter-websocket')
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
