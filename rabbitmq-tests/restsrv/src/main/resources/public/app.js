@@ -1,5 +1,5 @@
-angular.module('rmq.app', [])
-  .controller('home', function($scope, $http) {
+angular.module('rmq.app', ['ngWebSocket'])
+  .controller('home', function($scope, $http, $websocket) {
     $scope.greeting = {id: 'xxx', content: 'Hello World!'}
     $scope.rpcText = "test rpc";
     $scope.pubsubText = "test pubsub";
@@ -20,4 +20,17 @@ angular.module('rmq.app', [])
     $scope.onRouting = function() {
     	$http.get('http://localhost:8080/routing/call/'+$scope.routingService+'?name='+$scope.routingText)
     }
+        
+    function connect() {
+        var socket = $websocket('ws://localhost:8080/myws');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/topic/messages', function (data) {
+            	$scope.responses.push(data)
+            });
+        });
+    }
+  
+    connect();
 })

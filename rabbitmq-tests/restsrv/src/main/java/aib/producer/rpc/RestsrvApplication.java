@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication(scanBasePackages = {"aib.producer.rpc", "aib.producer.pubsub", "aib.producer.routing"})
+@SpringBootApplication(scanBasePackages = {"aib.producer.rpc", "aib.producer.pubsub", "aib.producer.routing", "aib.producer.websocket"})
 public class RestsrvApplication {
 	
 	@Bean
