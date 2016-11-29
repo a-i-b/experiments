@@ -14,3 +14,12 @@ Routing key:
 http://localhost:8080/routing/call/dicom?name=kuku
 
 http://localhost:8080/routing/call/hl7?name=kuku
+
+Spring + WebSocket + STOMP example:
+
+https://spring.io/guides/gs/messaging-stomp-websocket/
+
+STOMP library:
+
+https://github.com/jmesnil/stomp-websocket
+
