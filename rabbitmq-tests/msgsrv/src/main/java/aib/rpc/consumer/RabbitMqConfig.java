@@ -14,26 +14,10 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
 	
-	private static final String QueueNameWs = "q.ws";
-			
-	@Autowired
-	private ConnectionFactory cachingConnectionFactory;
+	public static final String QueueNameWs = "q.ws";
 	
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new JsonMessageConverter();
-    }
-    
-    @Bean
-    public RabbitTemplate rabbitTemplate() {
-        RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
-        template.setQueue(QueueNameWs);
-        template.setMessageConverter(jsonMessageConverter());
-        return template;
-    }
-
-    @Bean
-    public Queue myQueue() {
-       return new Queue(QueueNameWs);
     }
 }

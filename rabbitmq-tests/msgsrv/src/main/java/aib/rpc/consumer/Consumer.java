@@ -3,6 +3,7 @@ package aib.rpc.consumer;
 import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 
 import aib.rpc.consumer.contract.Reply;
@@ -29,42 +30,46 @@ public class Consumer {
     }
 
 	@RabbitListener(queues = "q.hl7")
-    public void onHl7(Request message) {
+	@SendTo(RabbitMqConfig.QueueNameWs)
+    public Reply onHl7(Request message) {
     	String result = "Routed to HL7 Service!!! Hallo, " + message.getName();        
     	logger.info(result);                
 
     	Reply replyMessage = new Reply();
         replyMessage.setGreeting(result);
-        rabbitTemplate.convertAndSend(replyMessage);
+        return replyMessage;
     }
 
 	@RabbitListener(queues = "q.dicom")
-    public void onDicom(Request message) {
+	@SendTo(RabbitMqConfig.QueueNameWs)
+    public Reply onDicom(Request message) {
     	String result = "Routed to DICOM Service!!! Hallo, " + message.getName();        
     	logger.info(result);
     	
         Reply replyMessage = new Reply();
         replyMessage.setGreeting(result);
-        rabbitTemplate.convertAndSend(replyMessage);
+        return replyMessage;
     }
 
 	@RabbitListener(queues = "q.c1")
-    public void onC1(Request message) {
+	@SendTo(RabbitMqConfig.QueueNameWs)
+    public Reply onC1(Request message) {
     	String result = "Routed to C1!!! Hallo, " + message.getName();        
     	logger.info(result);                
 
     	Reply replyMessage = new Reply();
         replyMessage.setGreeting(result);
-        rabbitTemplate.convertAndSend(replyMessage);
-    }
+        return replyMessage;
+	}
 
 	@RabbitListener(queues = "q.c2")
-    public void onC2(Request message) {
+	@SendTo(RabbitMqConfig.QueueNameWs)
+    public Reply onC2(Request message) {
     	String result = "Routed to C2!!! Hallo, " + message.getName();        
     	logger.info(result);                
 
     	Reply replyMessage = new Reply();
         replyMessage.setGreeting(result);
-        rabbitTemplate.convertAndSend(replyMessage);
+        return replyMessage;
     }
 }
