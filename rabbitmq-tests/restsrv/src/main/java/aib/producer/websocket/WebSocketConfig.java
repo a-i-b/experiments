@@ -1,6 +1,5 @@
 package aib.producer.websocket;
 
-import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
@@ -18,7 +17,6 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer  {
 	}
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
-		registry.addEndpoint("/myws");
+		registry.addEndpoint("/myws").withSockJS().setClientLibraryUrl("/js/sockjs.min.js");
 	}
-
 }
