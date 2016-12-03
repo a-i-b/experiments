@@ -29,7 +29,7 @@ angular.module('rmq.app', [])
     
     function connect() {
     	var socket = new SockJS('/myws');
-    	$scope.stompClient = Stomp.over(socket);    	//    	$scope.stompClient = Stomp.client('ws://localhost:8080/myws');
+    	$scope.stompClient = Stomp.over(socket);    	
     	$scope.stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             $scope.stompClient.subscribe('/topic/messages', function (data) {
