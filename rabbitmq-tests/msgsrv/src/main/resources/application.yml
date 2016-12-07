@@ -3,3 +3,4 @@ spring:
      username: guest
      password: guest
      host: localhost
+

@@ -28,7 +28,7 @@ angular.module('rmq.app', [])
     }
     
     function connect() {
-    	var socket = new SockJS('/myws');
+    	var socket = new WebSocket('ws://localhost:8080/myws');
     	$scope.stompClient = Stomp.over(socket);    	
     	$scope.stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);

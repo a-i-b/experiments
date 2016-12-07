@@ -1,5 +1,6 @@
 package aib.rpc.consumer;
 
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.amqp.support.converter.JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
@@ -15,5 +16,10 @@ public class RabbitMqConfig {
     @Bean
     public MessageConverter jsonMessageConverter(){
         return new JsonMessageConverter();
+    }
+    
+    @Bean
+    public Queue myQueue() {
+       return new Queue(QueueNameWs);
     }
 }
