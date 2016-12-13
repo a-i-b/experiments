@@ -1,0 +1,1 @@
+D:\aib\ffmpeg\ffmpeg-20161207-6b95da9-win64-shared\bin\ffmpeg -f dshow -video_size 1280x720 -framerate 30 -vcodec mjpeg -i video="Integrated Webcam" out.mp4

@@ -1,0 +1,1 @@
+D:\aib\ffmpeg\ffmpeg\bin\ffmpeg -f dshow -video_size 640x480 -rtbufsize 702000k -i video="Integrated Webcam" -s 640x480 -vcodec libx264 -tune zerolatency -b 900k -sdp_file stream.sdp -f rtp "rtp://127.0.0.1:1234"  | "C:\Program Files (x86)\VideoLAN\VLC\vlc" -vvv stream.sdp

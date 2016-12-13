@@ -1,0 +1,1 @@
+D:\aib\ffmpeg\ffmpeg-20161207-6b95da9-win64-shared\bin\ffmpeg -f dshow -video_size 640x480 -framerate 30 -rtbufsize 702000k -i video="Integrated Webcam"  -r 30 -threads 4 -vcodec libx264 -crf 0 -preset ultrafast -f mpegts udp://127.0.0.1:1234/ | "C:\Program Files (x86)\VideoLAN\VLC\vlc" --network-caching=10 udp://@127.0.0.1:1234
