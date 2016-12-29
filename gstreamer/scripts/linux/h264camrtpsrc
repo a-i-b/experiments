@@ -1,0 +1,6 @@
+gst-launch-1.0 v4l2src ! \
+ video/x-raw,width=640,height=480,framerate=30/1 ! \
+ x264enc tune=zerolatency byte-stream=true \
+ bitrate=15000 threads=1 speed-preset=ultrafast b-adapt=false key-int-max=15 bframes=0 dct8x8=false pass=qual vbv-buf-capacity=100 ! \
+ h264parse config-interval=1 ! \
+ rtph264pay pt=96 ! queue ! udpsink host=127.0.0.1 port=5000 async=false
