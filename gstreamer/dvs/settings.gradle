@@ -1,0 +1,2 @@
+include   ':contracts', ':apisrv', ':capturesrv'
+project(':contracts').projectDir = new File('contracts')

@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+<title>RabbitMQ Tests</title>
+<link href="/css/bootstrap.min.css" rel="stylesheet">
+<style type="text/css">
+[ng\:cloak], [ng-cloak], .ng-cloak {
+  display: none !important;
+}
+</style>
+</head>
+
+<body ng-app="rmq.app">
+  <div class="container">
+    <h1>Greeting</h1>
+    <div ng-controller="home" ng-cloak class="ng-cloak">
+	<table>
+	   <tr>
+	    <td>RPC:</td>
+	    <td><input name="inputRpcText" ng-model="rpcText" /></td>
+	    <td><button ng-click="onRpc()">Call</button></td>
+	   </tr>
+	   <tr>
+	    <td>Publish-Subscribe:</td>
+	    <td><input name="inputPubsubText" ng-model="pubsubText" /></td>
+	    <td><button ng-click="onPubsub()">Call</button></td>
+	   </tr>
+	   <tr>
+	    <td>Routing service:</td>
+	    <td><input name="inputServiceText" ng-model="routingService" /></td>
+	    <td></td>
+	   </tr>
+	   <tr>
+	    <td></td>
+	    <td><input name="inputRoutingText" ng-model="routingText" /></td>
+	    <td><button ng-click="onRouting()">Call</button></td>
+	   </tr>
+	</table>
+	<table>
+       <tr ng-repeat="response in responses" >
+           <td>{{response.greeting}}</td>
+    </tr>
+      </table>
+    </div>
+  </div>
+  <script src="js/stomp.min.js"></script>
+  <script src="js/angular.min.js" type="text/javascript"></script>
+  <script src="app.js"></script>
+</body>
+</html>
