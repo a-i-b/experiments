@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import aib.dvs.capture.contract.Reply;
-import aib.dvs.capture.contract.Request;
+import aib.dvs.capture.contract.PreviewStateChanged;
+import aib.dvs.capture.contract.StartStopPreview;
 
 @RestController
 @RequestMapping("/rpc")
@@ -18,12 +18,12 @@ public class RpcProvider {
 		this.rabbitRpcTemplate = rabbitRpcTemplate;
 	}
 	
-	@RequestMapping("/call")
-    public Reply greeting(@RequestParam(value="name", defaultValue="World") String name) {		
-		Request request = new Request();
-		request.setName(name);
+	@RequestMapping("/preview")
+    public PreviewStateChanged greeting(@RequestParam(value="isToStart") int isToStart) {		
+		StartStopPreview request = new StartStopPreview();
+		request.setToStart(isToStart);
 		
-		Reply reply = (Reply)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueNameRpc, request);		
+		PreviewStateChanged reply = (PreviewStateChanged)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueCapture, request);		
 		return reply;
     }
 }

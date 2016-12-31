@@ -16,7 +16,7 @@ public class RabbitConfigRpc {
 	
 	static Logger logger = Logger.getLogger(RabbitConfigRpc.class);
 	
-	final static String QueueNameRpc = "q.rpc"; 
+	final static String QueueCapture = "q.capture"; 
 
 	@Autowired
 	private ConnectionFactory cachingConnectionFactory;
@@ -28,7 +28,7 @@ public class RabbitConfigRpc {
     @Bean
     public RabbitTemplate rabbitRpcTemplate() {
         RabbitTemplate template = new RabbitTemplate(cachingConnectionFactory);
-        template.setQueue(QueueNameRpc);
+        template.setQueue(QueueCapture);
         template.setReplyTimeout(30*1000);
         template.setMessageConverter(jsonMessageConverter);
         return template;
@@ -36,6 +36,6 @@ public class RabbitConfigRpc {
 
     @Bean
     public Queue myQueue() {
-       return new Queue(QueueNameRpc);
+       return new Queue(QueueCapture);
     }
 }

@@ -1,27 +1,19 @@
 angular.module('rmq.app', [])
   .controller('home', function($rootScope, $scope, $http) {
-    $scope.greeting = {id: 'xxx', content: 'Hello World!'}
-    $scope.rpcText = "test rpc";
-    $scope.pubsubText = "test pubsub";
-    $scope.routingText = "test routing";
-    $scope.routingService = "dicom";
+    $scope.previewStateText = "Start";
+    $scope.previewState = 0;
     $scope.responses = [];
     $scope.stompClient = null;
     
-    $scope.onRpc = function() {
-    	$http.get('http://localhost:8080/rpc/call?name='+$scope.rpcText).
+    $scope.onChangePreviewState = function() {
+    	$http.get('http://localhost:8080/rpc/preview?isToStart='+$scope.previewState).
     		then(function(response) {
-    			 $scope.showMessage(response.data)
+    			var reply = response.data;
+    			$scope.previewState = reply.started;
+    			$scope.previewStateText = $scope.previewState == 1 ? "Stop" : "Start";
     	});
     }
-
-    $scope.onPubsub = function() {
-    	$http.get('http://localhost:8080/pubsub/call?name='+$scope.pubsubText)
-    }
-    $scope.onRouting = function() {
-    	$http.get('http://localhost:8080/routing/call/'+$scope.routingService+'?name='+$scope.routingText)
-    }
-        
+ 
     $scope.showMessage = function(message)  {
     	console.log(message);
     	$scope.responses.push(message)    
