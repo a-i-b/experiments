@@ -6,7 +6,7 @@ angular.module('rmq.app', [])
     $scope.stompClient = null;
     
     $scope.onChangePreviewState = function() {
-    	$http.get('http://localhost:8080/rpc/preview?isToStart='+(!$scope.previewState)).
+    	$http.get('http://localhost:8080/rpc/preview?isToStart='+(!$scope.previewState)+'&resolution=640x480').
     		then(function(response) {
     			var reply = response.data;
     			$scope.previewState = reply.isStarted;

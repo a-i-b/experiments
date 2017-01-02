@@ -9,7 +9,8 @@ import org.springframework.stereotype.Component;
 
 import aib.dvs.capture.contract.ICommand;
 import aib.dvs.capture.contract.PreviewStateChanged;
-import aib.dvs.capture.contract.StartStopPreview;
+import aib.dvs.capture.contract.StartPreview;
+import aib.dvs.capture.contract.StopPreview;
 
 @Component
 public class Consumer {
@@ -24,12 +25,17 @@ public class Consumer {
 	@RabbitListener(queues = "q.capture")
     public PreviewStateChanged onMessage(ICommand command) {
 		
-		if(command instanceof StartStopPreview) {
-			StartStopPreview message = (StartStopPreview)command;
-	    	logger.info((message.getIsToStart() ? "Starting" : "Stopping") + " preview");    	
+		if(command instanceof StartPreview) {
+			StartPreview message = (StartPreview)command;
+	    	logger.info("Starting preview");    	
 	        
 	    	PreviewStateChanged replyMessage = new PreviewStateChanged();
-	        replyMessage.setIsStarted(message.getIsToStart());
+	        replyMessage.setIsStarted(true);
+			return replyMessage;        
+		} else if(command instanceof StopPreview) {
+	    	logger.info("Stopping preview");    	
+	    	PreviewStateChanged replyMessage = new PreviewStateChanged();
+	        replyMessage.setIsStarted(false);
 			return replyMessage;        
 		}
 		
