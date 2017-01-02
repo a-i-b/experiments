@@ -26,11 +26,10 @@ public class Consumer {
 		
 		if(command instanceof StartStopPreview) {
 			StartStopPreview message = (StartStopPreview)command;
-	    	logger.info((message.isToStart() == 1 ? "Starting" : "Stopping") + " preview");    	
+	    	logger.info((message.getIsToStart() ? "Starting" : "Stopping") + " preview");    	
 	        
 	    	PreviewStateChanged replyMessage = new PreviewStateChanged();
-	        replyMessage.setIsStarted(message.isToStart() == 0 ? 1 : 0);
-	        replyMessage.setDt(new Date());
+	        replyMessage.setIsStarted(message.getIsToStart());
 			return replyMessage;        
 		}
 		

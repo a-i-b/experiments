@@ -1,16 +1,16 @@
 angular.module('rmq.app', [])
   .controller('home', function($rootScope, $scope, $http) {
     $scope.previewStateText = "Start";
-    $scope.previewState = 0;
+    $scope.previewState = false;
     $scope.responses = [];
     $scope.stompClient = null;
     
     $scope.onChangePreviewState = function() {
-    	$http.get('http://localhost:8080/rpc/preview?isToStart='+$scope.previewState).
+    	$http.get('http://localhost:8080/rpc/preview?isToStart='+(!$scope.previewState)).
     		then(function(response) {
     			var reply = response.data;
-    			$scope.previewState = reply.started;
-    			$scope.previewStateText = $scope.previewState == 1 ? "Stop" : "Start";
+    			$scope.previewState = reply.isStarted;
+    			$scope.previewStateText = $scope.previewState ? "Stop" : "Start";
     	});
     }
  
@@ -32,5 +32,5 @@ angular.module('rmq.app', [])
         });        
     }
   
-    connect();
+   // connect();
 })

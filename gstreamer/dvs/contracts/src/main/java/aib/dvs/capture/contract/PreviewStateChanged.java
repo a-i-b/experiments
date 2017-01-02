@@ -1,24 +1,13 @@
 package aib.dvs.capture.contract;
 
-import java.util.Date;
-
 public class PreviewStateChanged implements IEvent {
-	int isStarted;
-	Date dt;
+	Boolean isStarted;
 
-	public Date getDt() {
-		return dt;
-	}
-
-	public void setDt(Date dt) {
-		this.dt = dt;
-	}
-
-	public int isStarted() {
+	public Boolean getIsStarted() {
 		return isStarted;
 	}
 
-	public void setIsStarted(int isStarted) {
+	public void setIsStarted(Boolean isStarted) {
 		this.isStarted = isStarted;
 	}
 }

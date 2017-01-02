@@ -19,9 +19,9 @@ public class RpcProvider {
 	}
 	
 	@RequestMapping("/preview")
-    public PreviewStateChanged greeting(@RequestParam(value="isToStart") int isToStart) {		
+    public PreviewStateChanged preview(@RequestParam(value="isToStart") Boolean isToStart) {		
 		StartStopPreview request = new StartStopPreview();
-		request.setToStart(isToStart);
+		request.setIsToStart(isToStart);
 		
 		PreviewStateChanged reply = (PreviewStateChanged)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueCapture, request);		
 		return reply;

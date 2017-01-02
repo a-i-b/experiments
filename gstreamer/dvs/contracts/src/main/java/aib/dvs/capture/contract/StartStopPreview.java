@@ -1,13 +1,13 @@
 package aib.dvs.capture.contract;
 
 public class StartStopPreview implements ICommand {
-	Integer isToStart;
+	private Boolean isToStart;
 
-	public Integer isToStart() {
+	public Boolean getIsToStart() {
 		return isToStart;
 	}
 
-	public void setToStart(Integer isToStart) {
+	public void setIsToStart(Boolean isToStart) {
 		this.isToStart = isToStart;
 	}
 }
