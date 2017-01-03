@@ -7,6 +7,7 @@
 [ng\:cloak], [ng-cloak], .ng-cloak {
   display: none !important;
 }
+
 </style>
 </head>
 
@@ -14,17 +15,24 @@
   <div class="container">
     <h1>Greeting</h1>
     <div ng-controller="home" ng-cloak class="ng-cloak">
-	<table>
+	<table class="table">
 	   <tr>
-	    <td>Preview:</td>
-	    <td><button ng-click="onChangePreviewState()">{{previewStateText}}</button></td>
+	       <td>Preview</td>
+           <td><select name="singleSelect" 
+           				id="singleSelect" 
+           				ng-model="singleSelect" 
+           				ng-init="singleSelect=resolutions[0]"
+           				ng-options="resolution for resolution in resolutions">           
+    		   </select>
+          </td>
+	       <td><button ng-click="onChangePreviewState()">{{previewStateText}}</button></td>
 	   </tr>
 	</table>
 	<table>
        <tr ng-repeat="response in responses" >
            <td>{{response.greeting}}</td>
-    </tr>
-      </table>
+       </tr>
+    </table>
     </div>
   </div>
   <script src="js/stomp.min.js"></script>

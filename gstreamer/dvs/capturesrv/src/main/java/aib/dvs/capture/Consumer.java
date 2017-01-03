@@ -27,7 +27,7 @@ public class Consumer {
 		
 		if(command instanceof StartPreview) {
 			StartPreview message = (StartPreview)command;
-	    	logger.info("Starting preview");    	
+	    	logger.info("Starting preview. Resolution=" + message.getResolution());    	
 	        
 	    	PreviewStateChanged replyMessage = new PreviewStateChanged();
 	        replyMessage.setIsStarted(true);
