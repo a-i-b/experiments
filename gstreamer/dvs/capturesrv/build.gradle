@@ -27,6 +27,8 @@ repositories {
 
 dependencies {
 	compile files('libs/gst1-java-core-0.9-161201.jar')	
+	compile group: 'net.java.dev.jna', name: 'jna', version: '4.0.0'
+	
 	compile project(':contracts')
 	compile('org.springframework.boot:spring-boot-starter-amqp')
 	compile('org.codehaus.jackson:jackson-mapper-asl:1.9.13')

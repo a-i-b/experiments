@@ -9,9 +9,28 @@
 }
 
 </style>
+<script src="js/eventemitter2.min.js"></script>
+<script src="js/mjpegcanvas.js"></script>
+<script>
+  /**
+   * Setup all visualization elements when the page is loaded. 
+   */
+  function init() {
+    // Create the main viewer.
+    var viewer = new MJPEGCANVAS.Viewer({
+      divID : 'mjpeg',
+      host : 'localhost',
+      port : 5200,
+      width : 640,
+      height : 480,
+      topic : '',
+      interval : 200
+    });
+  }
+</script>
 </head>
 
-<body ng-app="rmq.app">
+<body ng-app="rmq.app" onload="init()">
   <div class="container">
     <h1>Greeting</h1>
     <div ng-controller="home" ng-cloak class="ng-cloak">
@@ -28,6 +47,10 @@
 	       <td><button ng-click="onChangePreviewState()">{{previewStateText}}</button></td>
 	   </tr>
 	</table>
+	<!--  >div id="mjpeg"></div-->
+	<video src="rtp://127.0.0.1:5200">
+		Your browser does not support the VIDEO tag and/or RTP streams.
+	</video>
 	<table>
        <tr ng-repeat="response in responses" >
            <td>{{response.greeting}}</td>

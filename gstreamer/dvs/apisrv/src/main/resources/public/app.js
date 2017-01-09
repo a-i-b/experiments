@@ -4,7 +4,7 @@ angular.module('rmq.app', [])
     $scope.previewState = false;
     $scope.responses = [];
     $scope.stompClient = null;
-    $scope.resolutions = ['1280x720', '1080x720', '640x480'];
+    $scope.resolutions = ['640x480@30', '800x600@30', '1280x720@30'];
     
     $scope.onChangePreviewState = function() {
     	$http.get('http://localhost:8080/rpc/preview?isToStart='+(!$scope.previewState)+'&resolution=' + $scope.singleSelect).
