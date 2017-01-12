@@ -1,0 +1,1 @@
+gst-launch-1.0 -v udpsrc caps="application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)RAW, sampling=(string)YCbCr-4:2:2, width=(string)640, height=(string)480, framerate=30/1,  depth=(string)8, payload=(int)96" port=5200 ! rtpvrawdepay ! autovideosink

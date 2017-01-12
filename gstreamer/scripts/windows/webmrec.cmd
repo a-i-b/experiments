@@ -1,0 +1,2 @@
+rem gst-launch-1.0 udpsrc port=5200 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)VP8, payload=(int)96, ssrc=(uint)2719554056, timestamp-offset=(uint)2846537105, seqnum-offset=(uint)25738, a-framerate=(string)30" ! rtpvp8depay ! vp8dec ! videoconvert ! autovideosink
+gst-launch-1.0 udpsrc port=5200 ! gdpdepay ! rtpvp8depay ! vp8dec ! videoconvert ! autovideosink
