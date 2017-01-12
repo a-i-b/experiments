@@ -1,1 +1,2 @@
-gst-launch-1.0 -v rtspsrc location=rtsp:\\127.0.0.1:8085 latency=0 ! jpegdec ! autovideosink
+gst-launch-1.0 -v udpsrc port=8085 caps="application/x-rtp,encoding-name=(string)JPEG,framerate=30/1" ! rtpjpegdepay ! jpegdec ! autovideosink sync=false
+rem ! rtpjitterbuffer latency=100 drop-on-latency=true  
