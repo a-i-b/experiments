@@ -19,11 +19,11 @@
     // Create the main viewer.
     var viewer = new MJPEGCANVAS.Viewer({
       divID : 'mjpeg',
-      host : 'localhost',
+      host : '127.0.0.1',
       port : 5200,
-      width : 640,
-      height : 480,
-      topic : '',
+      width : 1280,
+      height : 720,
+      topic : '/',
       interval : 200
     });
   }
@@ -47,10 +47,10 @@
 	       <td><button ng-click="onChangePreviewState()">{{previewStateText}}</button></td>
 	   </tr>
 	</table>
-	<!--  >div id="mjpeg"></div-->
-	<video src="rtp://127.0.0.1:5200">
+	<div id="mjpeg"></div>
+	<!-- video src="http://127.0.0.1:5200">
 		Your browser does not support the VIDEO tag and/or RTP streams.
-	</video>
+	</video -->
 	<table>
        <tr ng-repeat="response in responses" >
            <td>{{response.greeting}}</td>

@@ -318,17 +318,8 @@ MJPEGCANVAS.Viewer.prototype.__proto__ = EventEmitter2.prototype;
  */
 MJPEGCANVAS.Viewer.prototype.changeStream = function(topic) {
   this.image = new Image();
-  // create the image to hold the stream
-  var src = 'http://' + this.host + ':' + this.port + '/stream?topic=' + topic;
-  // add various options
-  src += '&width=' + this.width;
-  src += '&height=' + this.height;
-  if (this.quality > 0) {
-    src += '&quality=' + this.quality;
-  }
-  if (this.invert) {
-    src += '&invert=' + this.invert;
-  }
+
+  src = 'http://' + this.host + ':' + this.port;
   this.image.src = src;
   // emit an event for the change
   this.emit('change', topic);
