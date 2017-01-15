@@ -1,0 +1,6 @@
+gst-launch-1.0 -v udpsrc port=5200 ! \
+ application/x-rtp,encoding-name=JPEG,payload=96 ! \
+ queue ! \
+ rtpjpegdepay ! \
+ jpegdec ! \
+ autovideosink
