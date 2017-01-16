@@ -1,10 +1,18 @@
+repositories {
+	maven {
+       		url "http://repo1.maven.org/maven2"
+	}
+}        	
+
 buildscript {
 	ext {
 		springBootVersion = '1.4.2.RELEASE'
 	}
 	repositories {
-		mavenCentral()
-	}
+		maven {
+       			url "http://repo1.maven.org/maven2"
+		}
+	}        	
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
@@ -21,12 +29,8 @@ jar {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-repositories {
-	mavenCentral()
-}
-
 dependencies {
-	compile files('libs/gst1-java-core-0.9-161201.jar')	
+	compile files('../libs/gst1-java-core-0.9-161201.jar')	
 	compile group: 'net.java.dev.jna', name: 'jna', version: '4.0.0'
 	compile project(':contracts')
 	compile('org.springframework.boot:spring-boot-starter-amqp')

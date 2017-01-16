@@ -37,7 +37,7 @@ public class Consumer {
 	    	PreviewStateChanged replyMessage = new PreviewStateChanged();
 	    	
 	    	try {
-		    	replyMessage.setIsStarted(videoService.StartStream(message.getResolution(), 0, 5200));
+		    	replyMessage.setIsStarted(videoService.startStream(message.getResolution(), 0, 5200));
 	    	} catch (Exception ex) {
 	    		logger.error(ex.getMessage());
 	    		replyMessage.setIsStarted(false);
@@ -48,7 +48,7 @@ public class Consumer {
 		} else if(command instanceof StopPreview) {
 	    	logger.info("Stopping preview");   
 	    	PreviewStateChanged replyMessage = new PreviewStateChanged();
-	        replyMessage.setIsStarted(!videoService.StopStream(5200));
+	        replyMessage.setIsStarted(!videoService.stopStream(5200));
 	        logger.info(!replyMessage.getIsStarted() ? "Pipeline stopped successfully" : "Error while stopping pipeline");
 			return replyMessage;        
 		}

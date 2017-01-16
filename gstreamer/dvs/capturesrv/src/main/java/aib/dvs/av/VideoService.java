@@ -19,23 +19,24 @@ public class VideoService implements IVideoSevice {
 	}
 
 	@Override
-	public boolean StartStream(String resolution, int channel, int port) {
+	public boolean startStream(String resolution, int channel, int port) {
 		if(pipe != null)
 			return true;
 
 		try {
 	        String resData[] = resolution.split("(x)|(\\@)");
-	        final Element videosrc = ElementFactory.make("v4l2src", "source");
+	        
+	        final Element videosrc = ElementFactory.make(isWindows() ? "ksvideosrc" : "v4l2src", "source");
 	        final Element videofilter = ElementFactory.make("capsfilter", "filter");
 	        String caps = "video/x-raw, width=" + resData[0] + ", height=" + resData[1] + ", framerate="+resData[2] + "/1";
 	        videofilter.setCaps(Caps.fromString(caps));
+	    	Bin queue = Bin.launch("queue", true);
 	    	Bin binCodec = Bin.launch("jpegenc", true);
-//	    	Bin binCodec = Bin.launch("jpegenc quality=95", true);
 	    	Bin binRtp = Bin.launch("rtpjpegpay", true);
 	    	Bin binUdp = Bin.launch("udpsink host=127.0.0.1 port=5200", true);
 	    	pipe = new Pipeline();
-	    	pipe.addMany(videosrc, videofilter, binCodec, binRtp, binUdp);
-	    	Pipeline.linkMany(videosrc, videofilter, binCodec, binRtp, binUdp);
+	    	pipe.addMany(videosrc, videofilter, binCodec, binRtp, queue, binUdp);
+	    	Pipeline.linkMany(videosrc, videofilter, binCodec, binRtp, queue, binUdp);
 	   
 	    	StateChangeReturn ret = pipe.play();
 			
@@ -46,7 +47,7 @@ public class VideoService implements IVideoSevice {
 	}
 
 	@Override
-	public boolean StopStream(int port) {
+	public boolean stopStream(int port) {
 		if(pipe == null)
 			return true;
 		try {
@@ -56,5 +57,9 @@ public class VideoService implements IVideoSevice {
 		} catch(Exception ex) {
 			return false;		
 		}		
+	}
+	
+	private boolean isWindows() {
+		return System.getProperty("os.name").contains("Windows");		
 	}
 }

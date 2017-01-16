@@ -1,10 +1,18 @@
+repositories {
+	maven {
+       		url "http://repo1.maven.org/maven2"
+	}
+}        	
+
 buildscript {
 	ext {
 		springBootVersion = '1.4.2.RELEASE'
 	}
-	repositories {
-		mavenCentral()
-	}
+        repositories {
+		maven {
+        		url "http://repo1.maven.org/maven2"
+    		}
+	}        	
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
@@ -20,8 +28,3 @@ jar {
 }
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
-
-repositories {
-	mavenCentral()
-}
-
