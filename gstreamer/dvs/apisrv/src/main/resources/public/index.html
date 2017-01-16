@@ -14,23 +14,25 @@
 <script>
   /**
    * Setup all visualization elements when the page is loaded. 
-   */
+   */  
+/*   
   function init() {
     // Create the main viewer.
     var viewer = new MJPEGCANVAS.Viewer({
       divID : 'mjpeg',
       host : '127.0.0.1',
-      port : 5200,
-      width : 1280,
-      height : 720,
-      topic : '/',
-      interval : 200
+      port : 8080,
+      width : 640,
+      height : 480,
+      topic : '/rpc/mjpg',
+      interval : 50
     });
   }
+*/  
 </script>
 </head>
 
-<body ng-app="rmq.app" onload="init()">
+<body ng-app="rmq.app" >
   <div class="container">
     <h1>Greeting</h1>
     <div ng-controller="home" ng-cloak class="ng-cloak">

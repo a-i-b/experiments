@@ -319,11 +319,19 @@ MJPEGCANVAS.Viewer.prototype.__proto__ = EventEmitter2.prototype;
 MJPEGCANVAS.Viewer.prototype.changeStream = function(topic) {
   this.image = new Image();
 
-  src = 'http://' + this.host + ':' + this.port;
+  src = 'http://' + this.host + ':' + this.port + topic;
   this.image.src = src;
   // emit an event for the change
   this.emit('change', topic);
 };
+
+MJPEGCANVAS.Viewer.prototype.changeSize = function(resolution) {
+	var res = resolution.split('x');
+	this.width = res[0];
+	this.height = res[1].split('@')[0];
+	this.canvas.width = this.width;
+	this.canvas.height = this.height;
+}
 
 /**
  * @author Russell Toris - russell.toris@gmail.com

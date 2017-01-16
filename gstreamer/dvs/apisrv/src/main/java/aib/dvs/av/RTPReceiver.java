@@ -53,7 +53,7 @@ public class RTPReceiver implements IRTPReceiver {
 						buffer = sample.getBuffer();
 						ByteBuffer bb = buffer.map(false);
 			            if (bb != null) {	
-			            	logger.info("RTP packet is received");
+//			            	logger.info("RTP packet is received");
 		            		callback.accept(bb);
 			            }
 	            	} catch (Exception e) {
