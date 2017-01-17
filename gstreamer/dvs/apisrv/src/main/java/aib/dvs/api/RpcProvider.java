@@ -1,27 +1,16 @@
 package aib.dvs.api;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.core.io.InputStreamResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import aib.dvs.av.IRTPReceiver;
@@ -31,9 +20,10 @@ import aib.dvs.capture.contract.StartPreview;
 import aib.dvs.capture.contract.StopPreview;
 
 @RestController
-@RequestMapping("/rpc")
+@RequestMapping("/api")
 public class RpcProvider {
-	
+	static Logger logger = Logger.getLogger(RpcProvider.class);
+
 	RabbitTemplate rabbitRpcTemplate;
 	IRTPReceiver rtpReceiver;
 	
@@ -59,7 +49,7 @@ public class RpcProvider {
 		return reply;
     }
 	
-	@RequestMapping("/mjpg")
+	@RequestMapping("/mjpeg")
 	public void getMotionJPEGAsResource(HttpServletResponse response) {
 
 		response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
@@ -78,10 +68,12 @@ public class RpcProvider {
 							"\r\n\r\n").getBytes());	    		
 		    		channel.write(data);	    		
 					outputStream.write("\r\n\r\n".getBytes());				
-					outputStream.flush();	
+					outputStream.flush();
+					return true;
 					
 				} catch (IOException e) {
 					e.printStackTrace();
+					return false;
 				}
 		    });	    
 			
@@ -95,7 +87,7 @@ public class RpcProvider {
 			
 		} catch (IOException e) {
 			rtpReceiver.stop();
-			e.printStackTrace();
+			logger.info("Exit streaming...");
 		}		
 	}
 }

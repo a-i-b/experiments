@@ -1,7 +1,7 @@
 package aib.dvs.av;
 
 import java.nio.ByteBuffer;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.apache.log4j.Logger;
 import org.freedesktop.gstreamer.Bin;
@@ -23,23 +23,23 @@ public class RTPReceiver implements IRTPReceiver {
 	static Logger logger = Logger.getLogger(RTPReceiver.class);
 	
 	private Pipeline pipe;
+	
+	private boolean errorOnStream;
 
 	public RTPReceiver() {
 		Gst.init("RTPReceiver", new String[]{});	
 	}
 	
 	@Override
-	public boolean run(Consumer<ByteBuffer> callback) {
+	public boolean run(Function<ByteBuffer, Boolean> callback) {
 		if(pipe != null) {
 			stop();
 		}
-						
+		
+		errorOnStream = false;
+
 		try {
-	    	Bin src = Bin.launch("udpsrc port=5200", true);
-	        final Element videofilter = ElementFactory.make("capsfilter", "filter");
-	        String caps = "application/x-rtp,encoding-name=JPEG,framerate=30/1";
-	        videofilter.setCaps(Caps.fromString(caps));
-	    	Bin depay = Bin.launch("rtpjpegdepay", true);
+			Bin rtpBin = Bin.launch("udpsrc port=5200 caps=\"application/x-rtp,encoding-name=(string)JPEG,framerate=30/1\" ! queue ! rtpjpegdepay", true);
 	    	
 	    	final AppSink  appsink = (AppSink)ElementFactory.make("appsink", "sink");
 	    	appsink.set("emit-signals", true);
@@ -53,11 +53,11 @@ public class RTPReceiver implements IRTPReceiver {
 						buffer = sample.getBuffer();
 						ByteBuffer bb = buffer.map(false);
 			            if (bb != null) {	
-//			            	logger.info("RTP packet is received");
-		            		callback.accept(bb);
+			        		errorOnStream = callback.apply(bb);		            			
 			            }
 	            	} catch (Exception e) {
 	            		e.printStackTrace();
+	            		errorOnStream = true;
 		            } finally {
 	            		buffer.unmap();
 			            sample.dispose();
@@ -67,8 +67,8 @@ public class RTPReceiver implements IRTPReceiver {
 			});
 	        
 	    	pipe = new Pipeline();
-	    	pipe.addMany(src, videofilter, depay, appsink);
-	    	Pipeline.linkMany(src, videofilter, depay, appsink);
+	    	pipe.addMany(rtpBin,  appsink);
+	    	Pipeline.linkMany(rtpBin, appsink);
 	   
 	    	StateChangeReturn ret = pipe.play();
 			
@@ -85,8 +85,10 @@ public class RTPReceiver implements IRTPReceiver {
 		try {
 			StateChangeReturn ret = pipe.stop();
 			pipe = null;
+    		errorOnStream = false;
 	    	return true;
 		} catch(Exception ex) {
+    		errorOnStream = true;
 			return false;		
 		}
 	}
