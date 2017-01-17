@@ -69,15 +69,16 @@ public class RpcProvider {
 		    		channel.write(data);	    		
 					outputStream.write("\r\n\r\n".getBytes());				
 					outputStream.flush();
-					return true;
+					return false;
 					
 				} catch (IOException e) {
 					e.printStackTrace();
-					return false;
+					return true;
 				}
 		    });	    
 			
-			while(true) {
+			while(!rtpReceiver.isErrorOnStream()) {
+				response.flushBuffer();
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {

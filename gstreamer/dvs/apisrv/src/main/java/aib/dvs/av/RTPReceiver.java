@@ -36,7 +36,7 @@ public class RTPReceiver implements IRTPReceiver {
 			stop();
 		}
 		
-		errorOnStream = false;
+		setErrorOnStream(false);
 
 		try {
 			Bin rtpBin = Bin.launch("udpsrc port=5200 caps=\"application/x-rtp,encoding-name=(string)JPEG,framerate=30/1\" ! queue ! rtpjpegdepay", true);
@@ -53,11 +53,11 @@ public class RTPReceiver implements IRTPReceiver {
 						buffer = sample.getBuffer();
 						ByteBuffer bb = buffer.map(false);
 			            if (bb != null) {	
-			        		errorOnStream = callback.apply(bb);		            			
+			        		setErrorOnStream(callback.apply(bb));		            			
 			            }
 	            	} catch (Exception e) {
 	            		e.printStackTrace();
-	            		errorOnStream = true;
+	            		setErrorOnStream(true);
 		            } finally {
 	            		buffer.unmap();
 			            sample.dispose();
@@ -85,12 +85,20 @@ public class RTPReceiver implements IRTPReceiver {
 		try {
 			StateChangeReturn ret = pipe.stop();
 			pipe = null;
-    		errorOnStream = false;
+    		setErrorOnStream(false);
 	    	return true;
 		} catch(Exception ex) {
-    		errorOnStream = true;
+    		setErrorOnStream(true);
 			return false;		
 		}
+	}
+
+	public boolean isErrorOnStream() {
+		return errorOnStream;
+	}
+
+	private void setErrorOnStream(boolean errorOnStream) {
+		this.errorOnStream = errorOnStream;
 	}
 
 }

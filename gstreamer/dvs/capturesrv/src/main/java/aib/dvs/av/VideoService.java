@@ -25,18 +25,19 @@ public class VideoService implements IVideoSevice {
 
 		try {
 	        String resData[] = resolution.split("(x)|(\\@)");
-	        
-	        final Element videosrc = ElementFactory.make(isWindows() ? "ksvideosrc" : "v4l2src", "source");
-	        final Element videofilter = ElementFactory.make("capsfilter", "filter");
+	        	    	
 	        String caps = "video/x-raw, width=" + resData[0] + ", height=" + resData[1] + ", framerate="+resData[2] + "/1";
-	        videofilter.setCaps(Caps.fromString(caps));
-	    	Bin queue = Bin.launch("queue", true);
-	    	Bin binCodec = Bin.launch("jpegenc", true);
-	    	Bin binRtp = Bin.launch("rtpjpegpay", true);
-	    	Bin binUdp = Bin.launch("udpsink host=127.0.0.1 port=5200", true);
+
+	        String pipeLine = isWindows() ? "ksvideosrc" : "v4l2src";
+	    	pipeLine += " ! " + "capsfilter caps=\"" + caps + "\"";
+	    	pipeLine += " ! " + "queue";
+	    	pipeLine += " ! " + "jpegenc";
+	    	pipeLine += " ! " + "rtpjpegpay";
+	    	pipeLine += " ! " + "udpsink host=127.0.0.1 port=" + port;
+	    	Bin binRtp = Bin.launch(pipeLine, true);
+	    	
 	    	pipe = new Pipeline();
-	    	pipe.addMany(videosrc, videofilter, binCodec, binRtp, queue, binUdp);
-	    	Pipeline.linkMany(videosrc, videofilter, binCodec, binRtp, queue, binUdp);
+	    	pipe.add(binRtp);
 	   
 	    	StateChangeReturn ret = pipe.play();
 			

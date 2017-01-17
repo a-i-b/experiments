@@ -5,5 +5,6 @@ import java.util.function.Function;
 
 public interface IRTPReceiver {
 	boolean run(Function<ByteBuffer, Boolean> callback);
-	boolean stop();
+	boolean stop();	
+	boolean isErrorOnStream();
 }
