@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -49,6 +50,7 @@ public class RpcProvider {
 		return reply;
     }
 	
+	@Async
 	@RequestMapping("/mjpeg")
 	public void getMotionJPEGAsResource(HttpServletResponse response) {
 
@@ -78,7 +80,6 @@ public class RpcProvider {
 		    });	    
 			
 			while(!rtpReceiver.isErrorOnStream()) {
-				response.flushBuffer();
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
