@@ -1,0 +1,5 @@
+gst-launch-1.0 -v shmsrc socket-path=/tmp/preview ! \
+ application/x-rtp,encoding-name=JPEG,payload=96 ! \
+ rtpjpegdepay ! \
+ jpegdec ! \
+ autovideosink

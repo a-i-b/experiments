@@ -28,7 +28,9 @@
 	       <td><button ng-click="onChangePreviewState()">{{previewStateText}}</button></td>
 	   </tr>
 	</table>
-	<img alt="Herr" src="http://localhost:8080/api/mjpeg" />	
+	<div ng-show="previewState">
+		<img alt="Herr" ng-src="{{image_url}}" />	
+	</div>
 	<table>
        <tr ng-repeat="response in responses" >
            <td>{{response.greeting}}</td>
