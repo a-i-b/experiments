@@ -1,0 +1,1 @@
+"%JAVA_HOME%\bin\java.exe" -jar build\libs\apisrv-0.0.1-SNAPSHOT.jar -Dspring.application.admin.enabled=true -Dfile.encoding=Cp1252 --spring.output.ansi.enabled=always -Djava.library.path=C:\gstreamer\1.0\x86_64\bin
