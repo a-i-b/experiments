@@ -39,7 +39,7 @@ public class RTPReceiver implements IRTPReceiver {
 		setErrorOnStream(false);
 
 		try {
-			Bin rtpBin = Bin.launch("shmsrc socket-path=/tmp/preview ! application/x-rtp,encoding-name=(string)JPEG,framerate=30/1 ! queue ! rtpjpegdepay", true);
+			Bin rtpBin = Bin.launch("udpsrc buffer-size=10000000 port=5200 ! application/x-rtp,encoding-name=(string)JPEG,framerate=30/1 ! queue ! rtpjpegdepay", true);
 	    	
 	    	final AppSink  appsink = (AppSink)ElementFactory.make("appsink", "sink");
 	    	appsink.set("emit-signals", true);

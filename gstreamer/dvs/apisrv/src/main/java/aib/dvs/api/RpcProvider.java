@@ -54,6 +54,8 @@ public class RpcProvider {
 	@RequestMapping("/mjpeg")
 	public void getMotionJPEGAsResource(HttpServletResponse response) {
 
+		rtpReceiver.stop();
+		
 		response.setContentType("multipart/x-mixed-replace; boundary=--BoundaryString");
 
 		OutputStream outputStream;

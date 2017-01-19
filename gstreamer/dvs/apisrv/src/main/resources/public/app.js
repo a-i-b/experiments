@@ -5,16 +5,16 @@ angular.module('rmq.app', [])
     $scope.responses = [];
     $scope.stompClient = null;
     $scope.resolutions = ['640x480@30', '800x600@30', '1280x720@30', '1280x720@11'];
-    $scope.img_src = "http://localhost:8080/api/mjpeg";
+    $scope.img_src = "api/mjpeg";
 
     $scope.onChangePreviewState = function() {
-    	$http.get('http://localhost:8080/api/preview?isToStart='+(!$scope.previewState)+'&resolution=' + $scope.singleSelect).
+    	$http.get('/api/preview?isToStart='+(!$scope.previewState)+'&resolution=' + $scope.singleSelect).
     		then(function(response) {
     			var reply = response.data;
     			$scope.previewState = reply.isStarted;
     			$scope.previewStateText = $scope.previewState ? "Stop" : "Start";
     			$scope.image_url = $scope.img_src + '#' + new Date().getTime(); 
-    			Sscope.$apply();
+//    			Sscope.$apply();
     	});
     }
  

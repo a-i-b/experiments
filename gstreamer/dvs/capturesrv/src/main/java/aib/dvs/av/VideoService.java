@@ -33,8 +33,8 @@ public class VideoService implements IVideoSevice {
 	    	pipeLine += " ! " + "queue";
 	    	pipeLine += " ! " + "jpegenc";
 	    	pipeLine += " ! " + "rtpjpegpay";
-	    	pipeLine += " ! " + "shmsink socket-path=/tmp/preview shm-size=10000000";
-//	    	pipeLine += " ! " + "udpsink host=127.0.0.1 port=" + port;
+//	    	pipeLine += " ! " + "shmsink socket-path=/tmp/preview shm-size=10000000";
+	    	pipeLine += " ! " + "udpsink buffer-size=10000000 host=127.0.0.1 port=" + port;
 	    	Bin binRtp = Bin.launch(pipeLine, true);
 	    	
 	    	pipe = new Pipeline();
