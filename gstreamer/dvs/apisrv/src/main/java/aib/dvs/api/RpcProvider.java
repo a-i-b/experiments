@@ -15,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import aib.dvs.av.IRTPReceiver;
+import aib.dvs.capture.contract.CapturingStateChanged;
 import aib.dvs.capture.contract.ICommand;
 import aib.dvs.capture.contract.PreviewStateChanged;
+import aib.dvs.capture.contract.StartCapturing;
 import aib.dvs.capture.contract.StartPreview;
+import aib.dvs.capture.contract.StopCapturing;
 import aib.dvs.capture.contract.StopPreview;
 
 @RestController
@@ -49,7 +52,24 @@ public class RpcProvider {
 		PreviewStateChanged reply = (PreviewStateChanged)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueCapture, request);		
 		return reply;
     }
-	
+
+	@RequestMapping("/capture")
+    public CapturingStateChanged capture(@RequestParam(value="isToStart") Boolean isToStart, 
+    		@RequestParam(value="fileName") String fileName) {		
+		
+		ICommand request = null;
+		if(isToStart) {
+			StartCapturing startRequest = new StartCapturing();
+			startRequest.setFileName(fileName);
+			request = startRequest;
+		} else {
+			request = new StopCapturing();
+		}
+		
+		CapturingStateChanged reply = (CapturingStateChanged)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueCapture, request);		
+		return reply;
+    }
+
 	@Async
 	@RequestMapping("/mjpeg")
 	public void getMotionJPEGAsResource(HttpServletResponse response) {

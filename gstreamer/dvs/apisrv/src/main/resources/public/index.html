@@ -27,6 +27,11 @@
           </td>
 	       <td><button ng-click="onChangePreviewState()">{{previewStateText}}</button></td>
 	   </tr>
+	   <tr>
+	       <td>Capture</td>
+           <td></td>
+	       <td><button ng-click="onChangeCaptureState()">{{captureStateText}}</button></td>
+	   </tr>
 	</table>
 	<div ng-show="previewState">
 		<img alt="Herr" ng-src="{{image_url}}" />	

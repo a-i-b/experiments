@@ -12,9 +12,13 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import aib.dvs.av.IVideoSevice;
+import aib.dvs.capture.contract.CapturingStateChanged;
 import aib.dvs.capture.contract.ICommand;
+import aib.dvs.capture.contract.IEvent;
 import aib.dvs.capture.contract.PreviewStateChanged;
+import aib.dvs.capture.contract.StartCapturing;
 import aib.dvs.capture.contract.StartPreview;
+import aib.dvs.capture.contract.StopCapturing;
 import aib.dvs.capture.contract.StopPreview;
 
 @Component
@@ -28,7 +32,7 @@ public class Consumer {
 	}
 	
 	@RabbitListener(queues = "q.capture")
-    public PreviewStateChanged onMessage(ICommand command) throws InterruptedException {
+    public IEvent onMessage(ICommand command) throws InterruptedException {
 		
 		if(command instanceof StartPreview) {
 			StartPreview message = (StartPreview)command;
@@ -50,6 +54,20 @@ public class Consumer {
 	    	PreviewStateChanged replyMessage = new PreviewStateChanged();
 	        replyMessage.setIsStarted(!videoService.stopStream(5200));
 	        logger.info(!replyMessage.getIsStarted() ? "Pipeline stopped successfully" : "Error while stopping pipeline");
+			return replyMessage;        
+		} else if(command instanceof StartCapturing) {
+	    	logger.info("Starting capturing");   
+	    	StartCapturing message = (StartCapturing)command;
+	    	CapturingStateChanged replyMessage = new CapturingStateChanged();
+	        replyMessage.setIsRunning(!videoService.startCapturing(message.getFileName()));
+	        logger.info(!replyMessage.getIsRunning() ? "Pipeline started successfully" : "Error while starting pipeline");
+			return replyMessage;        
+		} else if(command instanceof StopCapturing) {
+	    	logger.info("Stopping capturing");   
+	    	StopCapturing message = (StopCapturing)command;
+	    	CapturingStateChanged replyMessage = new CapturingStateChanged();
+	        replyMessage.setIsRunning(!videoService.stopCapturing());
+	        logger.info(!replyMessage.getIsRunning() ? "Pipeline started successfully" : "Error while starting pipeline");
 			return replyMessage;        
 		}
 		

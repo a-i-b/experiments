@@ -1,6 +1,8 @@
 angular.module('rmq.app', [])
   .controller('home', function($rootScope, $scope, $http) {
     $scope.previewStateText = "Start";
+    $scope.captureStateText = "Start";
+    $scope.captureState = false;
     $scope.previewState = false;
     $scope.responses = [];
     $scope.stompClient = null;
@@ -16,7 +18,16 @@ angular.module('rmq.app', [])
     			$scope.image_url = $scope.img_src + '#' + new Date().getTime(); 
     	});
     }
- 
+
+    $scope.onChangeCaptureState = function() {
+    	$http.get('/api/capture?isToStart='+(!$scope.captureState)+'&fileName=vid' + new Date().getTime()+'.mp4').
+    		then(function(response) {
+    			var reply = response.data;  	
+    			$scope.captureState = reply.isRunning;
+    			$scope.captureStateText = $scope.captureState ? "Stop" : "Start";
+    	});
+    }
+
     $scope.showMessage = function(message)  {
     	console.log(message);
     	$scope.responses.push(message)    
