@@ -40,18 +40,29 @@ public class VideoService implements IVideoSevice {
 	    	rtpLine += " ! " + "rtpjpegpay";
 	    	rtpLine += " ! " + "udpsink buffer-size=10000000 host=127.0.0.1 port=" + port + " sync = false";
 	    	Bin rtpBin = Bin.launch(rtpLine, true);
-	    	
+	    		    	
+	    	String pipeLine = "queue";
+        	pipeLine += " ! x264enc ! mp4mux ! filesink location=~/Videos/xxx.mp4";
+        	data.binMp4 = Bin.launch(pipeLine, true);
+        	
 	    	data.pipe = new Pipeline();
-	    	data.pipe.addMany(readBin, data.tee, rtpBin);
+	    	data.pipe.addMany(readBin, data.tee, rtpBin, data.binMp4);
 	    	
-	    	readBin.link(data.tee);
-	    	data.tee.link(rtpBin);
+	    	if(!readBin.link(data.tee)) throw new Exception("Can not link");
 	    	
-	   
-	    	StateChangeReturn ret = data.pipe.play();
+	    	if(!data.tee.link(rtpBin)) throw new Exception("Can not link");
+	    	if(!data.tee.link(data.binMp4)) throw new Exception("Can not link");
+    		
+    		StateChangeReturn ret = data.pipe.play();
 			
-	    	return true;
+    		if(ret == StateChangeReturn.ASYNC || ret == StateChangeReturn.SUCCESS) {
+    			return true;
+    		}
+    		
+    		logger.error("Pipeline play() returnd " + ret.name());
+	    	return false;
 		} catch(Exception ex) {
+			logger.error(ex);
 			return false;		
 		}		
 	}
@@ -76,6 +87,7 @@ public class VideoService implements IVideoSevice {
         	data.binMp4 = Bin.launch(pipeLine, true);
     		data.pipe.add(data.binMp4);
     		data.tee.link(data.binMp4);
+    		data.binMp4.play();
     	}
     	
 		return true;
