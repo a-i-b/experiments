@@ -1,22 +1,34 @@
 																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											package aib.dvs.av;
 
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.apache.log4j.Logger;
 import org.freedesktop.gstreamer.Bin;
-import org.freedesktop.gstreamer.Caps;
+import org.freedesktop.gstreamer.Bus;
 import org.freedesktop.gstreamer.Element;
 import org.freedesktop.gstreamer.ElementFactory;
+import org.freedesktop.gstreamer.GhostPad;
 import org.freedesktop.gstreamer.Gst;
+import org.freedesktop.gstreamer.GstObject;
+import org.freedesktop.gstreamer.Message;
+import org.freedesktop.gstreamer.MessageType;
+import org.freedesktop.gstreamer.Pad;
 import org.freedesktop.gstreamer.Pipeline;
+import org.freedesktop.gstreamer.State;
 import org.freedesktop.gstreamer.StateChangeReturn;
+import org.freedesktop.gstreamer.lowlevel.GstBusAPI;
+import org.freedesktop.gstreamer.message.EOSMessage;
 
 public class VideoService implements IVideoSevice {
 	static Logger logger = Logger.getLogger(VideoService.class);
 
 	private VideoServiceData data = new VideoServiceData();
 
-
+	private List<Pad> pads;
+	
 	public VideoService() {
-		Gst.init("Video streaming service", new String[]{});		
+		Gst.init("Video streaming service", new String[]{ "--gst-debug=2", "--gst-debug-no-color" });		
 	}
 
 	@Override
@@ -32,30 +44,62 @@ public class VideoService implements IVideoSevice {
 	        String readPipe = isWindows() ? "ksvideosrc" : "v4l2src";
 	        readPipe += " ! " + "capsfilter caps=\"" + caps + "\"";
 	    	Bin readBin =  Bin.launch(readPipe, true);
+	    	readBin.setName("readBin");
 	    	
 	    	data.tee = ElementFactory.make("tee", "tp");
 	    		
-	    	String rtpLine = "queue leaky=1";
+	    	String rtpLine = "queue leaky=1 name=rtpQueue";
 	    	rtpLine += " ! " + "jpegenc";
 	    	rtpLine += " ! " + "rtpjpegpay";
 	    	rtpLine += " ! " + "udpsink buffer-size=10000000 host=127.0.0.1 port=" + port + " sync = false";
 	    	Bin rtpBin = Bin.launch(rtpLine, true);
+	    	rtpBin.setName("rtpBin");
 	    		    	
-	    	String pipeLine = "queue";
-        	pipeLine += " ! x264enc ! mp4mux ! filesink location=~/Videos/xxx.mp4";
+	    	String pipeLine = "queue name=captureQueue" + (isWindows() ? " ! videoconvert" : "");
+	    	String savePath = isWindows() ? "d:/captured.mp4" : "~/Videos/captured.mp4";
+        	pipeLine += " ! x264enc ! mp4mux ! filesink name=fs location=" + savePath;
         	data.binMp4 = Bin.launch(pipeLine, true);
+        	data.binMp4.setName("binMp4");
         	
+/*        	
+        	String allLine = readPipe + " ! tee name=tp ! " + rtpLine + " tp. ! " + pipeLine;
+        	Pipeline all =  Pipeline.launch(allLine);
+        	all.play();
+        	inspect(all);
+        	all.stop();
+*/        	
 	    	data.pipe = new Pipeline();
 	    	data.pipe.addMany(readBin, data.tee, rtpBin, data.binMp4);
+
+	    	if(!Pipeline.linkMany(readBin, data.tee)) throw new Exception("Can not link");
+	    	    		
+	    	Pad teeSrc0 = data.tee.getRequestPad("src_%u");
+//	    	Pad rtpSink = rtpBin.getElementByName("rtpQueue").getStaticPad("sink");
+	    	Pad rtpSink = rtpBin.getStaticPad("sink");
 	    	
-	    	if(!readBin.link(data.tee)) throw new Exception("Can not link");
 	    	
-	    	if(!data.tee.link(rtpBin)) throw new Exception("Can not link");
-	    	if(!data.tee.link(data.binMp4)) throw new Exception("Can not link");
-    		
-    		StateChangeReturn ret = data.pipe.play();
+	    	teeSrc0.link(rtpSink);
+	    	Pad peer0 = teeSrc0.getPeer();
+	    	Pad peerRtp = rtpSink.getPeer();
+	    		    		    	    	
+	    	Pad teeSrc1 = data.tee.getRequestPad("src_%u");
+//	    	Pad captureSink = data.binMp4.getElementByName("captureQueue").getStaticPad("sink");
+	    	Pad captureSink = data.binMp4.getStaticPad("sink");
+	    	teeSrc1.link(captureSink);
+//	    	teeSrc1.setActive(true);
+//	    	captureSink.setActive(true);
+	    	Pad peer1 = teeSrc1.getPeer();
+	    	Pad peerCap = captureSink.getPeer();
+	    	
+	    	pads = data.tee.getSrcPads();
+	    	
+	    	inspect(data.pipe);
+
+	    	StateChangeReturn ret = data.pipe.play();
 			
-    		if(ret == StateChangeReturn.ASYNC || ret == StateChangeReturn.SUCCESS) {
+	    	inspect(data.pipe);
+
+	    	if(ret == StateChangeReturn.ASYNC || ret == StateChangeReturn.SUCCESS) {
     			return true;
     		}
     		
@@ -72,8 +116,13 @@ public class VideoService implements IVideoSevice {
 		if(data.pipe == null)
 			return true;
 		try {
+//			pads.stream().forEach(pad -> data.tee.releaseRequestPad(pad));
+			
+			data.pipe.getBus().post(new EOSMessage(data.pipe.getSinks().get(0)));
+			GstBusAPI.GSTBUS_API.gst_bus_poll(data.pipe.getBus(), MessageType.EOS, 5000);
+			data.pipe.setState(State.PAUSED);
+			data.pipe.setState(State.READY);
 			StateChangeReturn ret = data.pipe.stop();
-			data.pipe = null;
 	    	return true;
 		} catch(Exception ex) {
 			return false;		
@@ -103,5 +152,37 @@ public class VideoService implements IVideoSevice {
 
 	private boolean isWindows() {
 		return System.getProperty("os.name").contains("Windows");		
+	}
+	
+	private static void inspect(Pipeline pipe) {
+		for (Element elt : pipe.getElements()) {
+			System.out.println(elt.getName());
+			for (Pad pad : elt.getSinkPads()) {
+				if (pad.getPeer() == null) {
+					System.out.println("\tSink pad: " + pad.getName()
+							+ " DISCONNECTED");
+				} else {
+					System.out
+							.println("\tSink pad: " + pad.getName()
+									+ " connected to peer parent="
+									+ pad.getPeer().getParent() + " / "
+									+ pad.getPeer());
+				}
+			}
+			for (Pad pad : elt.getSrcPads()) {
+				if (pad.getPeer() == null) {
+					System.out.println("\tSink pad: " + pad.getName()
+							+ " DISCONNECTED");
+				} else {
+					System.out
+							.println("\tSrc pad: " + pad.getName()
+									+ " connected to peer parent="
+									+ pad.getPeer().getParent() + " / "
+									+ pad.getPeer());
+				}
+			}
+		}
+
+		pipe.debugToDotFile(Pipeline.DEBUG_GRAPH_SHOW_ALL, "test");
 	}
 }
