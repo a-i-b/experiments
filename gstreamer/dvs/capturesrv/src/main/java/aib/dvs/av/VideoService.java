@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 import org.apache.log4j.Logger;
 import org.freedesktop.gstreamer.Bin;
 import org.freedesktop.gstreamer.Bus;
+import org.freedesktop.gstreamer.Bus.EOS;
 import org.freedesktop.gstreamer.Element;
 import org.freedesktop.gstreamer.ElementFactory;
 import org.freedesktop.gstreamer.GhostPad;
@@ -18,9 +19,10 @@ import org.freedesktop.gstreamer.Pipeline;
 import org.freedesktop.gstreamer.State;
 import org.freedesktop.gstreamer.StateChangeReturn;
 import org.freedesktop.gstreamer.lowlevel.GstBusAPI;
+import org.freedesktop.gstreamer.lowlevel.GstEventAPI;
 import org.freedesktop.gstreamer.message.EOSMessage;
 
-public class VideoService implements IVideoSevice {
+public class VideoService implements IVideoSevice, EOS {
 	static Logger logger = Logger.getLogger(VideoService.class);
 
 	private VideoServiceData data = new VideoServiceData();
@@ -56,49 +58,32 @@ public class VideoService implements IVideoSevice {
 	    	rtpBin.setName("rtpBin");
 	    		    	
 	    	String pipeLine = "queue name=captureQueue" + (isWindows() ? " ! videoconvert" : "");
+        	pipeLine += " ! video/x-raw, format=I420";
 	    	String savePath = isWindows() ? "d:/captured.mp4" : "~/Videos/captured.mp4";
         	pipeLine += " ! x264enc ! mp4mux ! filesink name=fs location=" + savePath;
         	data.binMp4 = Bin.launch(pipeLine, true);
         	data.binMp4.setName("binMp4");
-        	
-/*        	
-        	String allLine = readPipe + " ! tee name=tp ! " + rtpLine + " tp. ! " + pipeLine;
-        	Pipeline all =  Pipeline.launch(allLine);
-        	all.play();
-        	inspect(all);
-        	all.stop();
-*/        	
+        	       	
 	    	data.pipe = new Pipeline();
 	    	data.pipe.addMany(readBin, data.tee, rtpBin, data.binMp4);
-
+	    	
 	    	if(!Pipeline.linkMany(readBin, data.tee)) throw new Exception("Can not link");
 	    	    		
 	    	Pad teeSrc0 = data.tee.getRequestPad("src_%u");
-//	    	Pad rtpSink = rtpBin.getElementByName("rtpQueue").getStaticPad("sink");
-	    	Pad rtpSink = rtpBin.getStaticPad("sink");
-	    	
-	    	
+	    	Pad rtpSink = rtpBin.getStaticPad("sink");	    	    	
 	    	teeSrc0.link(rtpSink);
-	    	Pad peer0 = teeSrc0.getPeer();
-	    	Pad peerRtp = rtpSink.getPeer();
 	    		    		    	    	
 	    	Pad teeSrc1 = data.tee.getRequestPad("src_%u");
-//	    	Pad captureSink = data.binMp4.getElementByName("captureQueue").getStaticPad("sink");
 	    	Pad captureSink = data.binMp4.getStaticPad("sink");
 	    	teeSrc1.link(captureSink);
-//	    	teeSrc1.setActive(true);
-//	    	captureSink.setActive(true);
-	    	Pad peer1 = teeSrc1.getPeer();
-	    	Pad peerCap = captureSink.getPeer();
 	    	
 	    	pads = data.tee.getSrcPads();
 	    	
 	    	inspect(data.pipe);
+	    	
+	    	data.pipe.getBus().connect(this);
 
-	    	StateChangeReturn ret = data.pipe.play();
-			
-	    	inspect(data.pipe);
-
+	    	StateChangeReturn ret = data.pipe.play();			
 	    	if(ret == StateChangeReturn.ASYNC || ret == StateChangeReturn.SUCCESS) {
     			return true;
     		}
@@ -118,11 +103,7 @@ public class VideoService implements IVideoSevice {
 		try {
 //			pads.stream().forEach(pad -> data.tee.releaseRequestPad(pad));
 			
-			data.pipe.getBus().post(new EOSMessage(data.pipe.getSinks().get(0)));
-			GstBusAPI.GSTBUS_API.gst_bus_poll(data.pipe.getBus(), MessageType.EOS, 5000);
-			data.pipe.setState(State.PAUSED);
-			data.pipe.setState(State.READY);
-			StateChangeReturn ret = data.pipe.stop();
+			data.pipe.sendEvent(GstEventAPI.GSTEVENT_API.gst_event_new_eos());
 	    	return true;
 		} catch(Exception ex) {
 			return false;		
@@ -184,5 +165,15 @@ public class VideoService implements IVideoSevice {
 		}
 
 		pipe.debugToDotFile(Pipeline.DEBUG_GRAPH_SHOW_ALL, "test");
+	}
+
+	@Override
+	public void endOfStream(GstObject go) {
+		logger.info("Got EOS from " + go.getName());
+		data.pipe.setState(State.PAUSED);
+		data.pipe.setState(State.READY);
+		StateChangeReturn ret = data.pipe.stop();
+		data.pipe.dispose();
+		data.pipe = null;
 	}
 }
