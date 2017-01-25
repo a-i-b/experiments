@@ -20,7 +20,8 @@ angular.module('rmq.app', [])
     }
 
     $scope.onChangeCaptureState = function() {
-    	$http.get('/api/capture?isToStart='+(!$scope.captureState)+'&fileName=vid' + new Date().getTime()+'.mp4').
+    	var fileDate =  formatDate(new Date()).replace('  ', '');
+    	$http.get('/api/capture?isToStart='+(!$scope.captureState)+'&fileName=vid' +fileDate+'.mp4').
     		then(function(response) {
     			var reply = response.data;  	
     			$scope.captureState = reply.isRunning;
@@ -46,5 +47,11 @@ angular.module('rmq.app', [])
         });        
     }
   
+    function formatDate(date) {
+    	  var hours = date.getHours();
+    	  var minutes = date.getMinutes();
+    	  var strTime = hours + '' + minutes + '' + date.getSeconds();
+    	  return date.getFullYear() + '' + date.getMonth()+1 + '' + date.getDate() + '_' + "  " + strTime;
+    }
    // connect();
 })

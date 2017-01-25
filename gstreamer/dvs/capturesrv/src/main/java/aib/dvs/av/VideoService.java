@@ -60,13 +60,6 @@ public class VideoService implements IVideoSevice, EOS {
 			Bin rtpBin = Bin.launch(rtpLine, true);
 			rtpBin.setName("rtpBin");
 
-			String pipeLine = "queue name=captureQueue" + (isWindows() ? " ! videoconvert" : "");
-			pipeLine += " ! video/x-raw, format=I420";
-			String savePath = isWindows() ? "d:/captured.mp4" : "~/Videos/captured.mp4";
-			pipeLine += " ! x264enc ! mp4mux name=muxer ! filesink name=fs location=" + savePath;
-			mp4Bin = Bin.launch(pipeLine, true);
-			mp4Bin.setName("mp4Bin");
-
 			pipe = new Pipeline();
 			pipe.addMany(readBin, tee, rtpBin);
 
@@ -76,8 +69,7 @@ public class VideoService implements IVideoSevice, EOS {
 			Pad teeSrc0 = tee.getRequestPad("src_%u");
 			Pad rtpSink = rtpBin.getStaticPad("sink");
 			teeSrc0.link(rtpSink);
-			teeSrc1 = tee.getRequestPad("src_%u");
-
+//			teeSrc1 = tee.getRequestPad("src_%u");
 			pipe.getBus().connect(this);
 
 			inspect(pipe);
@@ -106,17 +98,15 @@ public class VideoService implements IVideoSevice, EOS {
 			return false;
 		}
 	}
-
+	
 	public boolean startCapturing(String fileName) {
 		if (pipe != null) {
 			if(pipe.getElementByName("mp4Bin") == null) {
-				inspect(pipe);
-				State state = pipe.getState();
+				mp4Bin = createCaptureBin(fileName);				
 				pipe.add(mp4Bin);
-				Element filesink = mp4Bin.getElementByName("fs");
-				String savePath = (isWindows() ? "d:/" : "~/Videos/") + fileName;
-				filesink.set("location", savePath);
 				captureSink = mp4Bin.getStaticPad("sink");
+				teeSrc1 = tee.getRequestPad("src_1");
+				logger.info("getRequestPad = " + teeSrc1.getName());
 				teeSrc1.link(captureSink);
 				StateChangeReturn ret = mp4Bin.play();
 
@@ -147,7 +137,6 @@ public class VideoService implements IVideoSevice, EOS {
 			};			
 
 			Pad mp4BinEnd= mp4Bin.getElementByName("fs").getStaticPad("sink");
-			mp4BinEnd.addEventProbe(eosListener);
 
 			teeSrc1.block(new Runnable() {
 
@@ -155,9 +144,9 @@ public class VideoService implements IVideoSevice, EOS {
 				public void run() {
 					if(pipe.getElementByName("mp4Bin") != null) {
 						teeSrc1.unlink(captureSink);
+						mp4BinEnd.addEventProbe(eosListener);
 						mp4Bin.getStaticPad("sink").sendEvent(GstEventAPI.GSTEVENT_API.gst_event_new_eos());							
 						pipe.remove(mp4Bin);
-						inspect(pipe);
 					}
 				}
 			});
@@ -168,11 +157,26 @@ public class VideoService implements IVideoSevice, EOS {
 				e.printStackTrace();
 			}
 			
-			StateChangeReturn ret = mp4Bin.setState(State.NULL);
-
-			logger.info("Stop sended");
+			StateChangeReturn ret = mp4Bin.stop();
+			mp4Bin.dispose();
+			mp4Bin = null;
+			tee.releaseRequestPad(teeSrc1);
+			teeSrc1.dispose();
+			teeSrc1 = null;
+			logger.info("Stopped");
+			inspect(pipe);
 		}
 		return true;
+	}
+
+	@Override
+	public void endOfStream(GstObject go) {
+		logger.info("Got EOS for " + go.getName());
+		pipe.setState(State.PAUSED);
+		pipe.setState(State.READY);
+		StateChangeReturn ret = pipe.stop();
+		pipe.dispose();
+		pipe = null;
 	}
 
 	private boolean isWindows() {
@@ -203,13 +207,13 @@ public class VideoService implements IVideoSevice, EOS {
 		pipe.debugToDotFile(Pipeline.DEBUG_GRAPH_SHOW_ALL, "test");
 	}
 
-	@Override
-	public void endOfStream(GstObject go) {
-		logger.info("Got EOS for " + go.getName());
-		pipe.setState(State.PAUSED);
-		pipe.setState(State.READY);
-		StateChangeReturn ret = pipe.stop();
-		pipe.dispose();
-		pipe = null;
+	private Bin createCaptureBin(String fileName) {
+		String pipeLine = "queue name=captureQueue" + (isWindows() ? " ! videoconvert" : "");
+		pipeLine += " ! video/x-raw, format=I420";
+		String savePath = (isWindows() ? "d:/Videos/" : "~/Videos/") + fileName;
+		pipeLine += " ! x264enc ! mp4mux name=muxer ! filesink name=fs location=" + savePath;
+		Bin mp4Bin = Bin.launch(pipeLine, true);
+		mp4Bin.setName("mp4Bin");
+		return mp4Bin;
 	}
 }
