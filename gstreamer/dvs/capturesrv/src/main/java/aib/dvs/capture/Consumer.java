@@ -47,27 +47,27 @@ public class Consumer {
 	    		replyMessage.setIsStarted(false);
 	    	}
 	        
-	        logger.info(replyMessage.getIsStarted() ? "Pipeline started successfully" : "Error while starting pipeline");
+	        logger.info(replyMessage.getIsStarted() ? "Preview started successfully" : "Error while starting Preview");
 			return replyMessage;        
 		} else if(command instanceof StopPreview) {
 	    	logger.info("Stopping preview");   
 	    	PreviewStateChanged replyMessage = new PreviewStateChanged();
 	        replyMessage.setIsStarted(!videoService.stopStream(5200));
-	        logger.info(!replyMessage.getIsStarted() ? "Pipeline stopped successfully" : "Error while stopping pipeline");
+	        logger.info(!replyMessage.getIsStarted() ? "Preview stopped successfully" : "Error while stopping Preview");
 			return replyMessage;        
 		} else if(command instanceof StartCapturing) {
 	    	logger.info("Starting capturing");   
 	    	StartCapturing message = (StartCapturing)command;
 	    	CapturingStateChanged replyMessage = new CapturingStateChanged();
-	        replyMessage.setIsRunning(!videoService.startCapturing(message.getFileName()));
-	        logger.info(!replyMessage.getIsRunning() ? "Pipeline started successfully" : "Error while starting pipeline");
+	        replyMessage.setIsRunning(videoService.startCapturing(message.getFileName()));
+	        logger.info(replyMessage.getIsRunning() ? "Capturing started successfully" : "Error while starting Capturing");
 			return replyMessage;        
 		} else if(command instanceof StopCapturing) {
 	    	logger.info("Stopping capturing");   
 	    	StopCapturing message = (StopCapturing)command;
 	    	CapturingStateChanged replyMessage = new CapturingStateChanged();
 	        replyMessage.setIsRunning(!videoService.stopCapturing());
-	        logger.info(!replyMessage.getIsRunning() ? "Pipeline started successfully" : "Error while starting pipeline");
+	        logger.info(!replyMessage.getIsRunning() ? "Capturing stopped successfully" : "Error while stopping Capturing");
 			return replyMessage;        
 		}
 		

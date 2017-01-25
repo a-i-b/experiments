@@ -63,7 +63,9 @@ public class RpcProvider {
 			startRequest.setFileName(fileName);
 			request = startRequest;
 		} else {
-			request = new StopCapturing();
+			StopCapturing stopRequest = new StopCapturing();
+			stopRequest.setFake(1);
+			request = stopRequest;
 		}
 		
 		CapturingStateChanged reply = (CapturingStateChanged)rabbitRpcTemplate.convertSendAndReceive(RabbitConfigRpc.QueueCapture, request);		
