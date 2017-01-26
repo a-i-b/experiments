@@ -6,15 +6,12 @@ import java.util.function.Function;
 import org.apache.log4j.Logger;
 import org.freedesktop.gstreamer.Bin;
 import org.freedesktop.gstreamer.Buffer;
-import org.freedesktop.gstreamer.Caps;
-import org.freedesktop.gstreamer.Element;
 import org.freedesktop.gstreamer.ElementFactory;
 import org.freedesktop.gstreamer.FlowReturn;
 import org.freedesktop.gstreamer.Gst;
 import org.freedesktop.gstreamer.Pipeline;
 import org.freedesktop.gstreamer.Sample;
 import org.freedesktop.gstreamer.StateChangeReturn;
-import org.freedesktop.gstreamer.Structure;
 import org.freedesktop.gstreamer.elements.AppSink;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +36,7 @@ public class RTPReceiver implements IRTPReceiver {
 		setErrorOnStream(false);
 
 		try {
-			Bin rtpBin = Bin.launch("udpsrc buffer-size=10000000 port=5200 ! application/x-rtp,encoding-name=(string)JPEG,framerate=30/1 ! queue ! rtpjpegdepay", true);
+			Bin rtpBin = Bin.launch("udpsrc buffer-size=10000000 auto-multicast=true multicast-group=224.1.1.1 port=5200 ! application/x-rtp,encoding-name=(string)JPEG,framerate=30/1 ! queue ! rtpjpegdepay", true);
 	    	
 	    	final AppSink  appsink = (AppSink)ElementFactory.make("appsink", "sink");
 	    	appsink.set("emit-signals", true);

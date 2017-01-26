@@ -56,7 +56,7 @@ public class VideoService implements IVideoSevice, EOS {
 			String rtpLine = "queue leaky=1 name=rtpQueue";
 			rtpLine += " ! " + "jpegenc";
 			rtpLine += " ! " + "rtpjpegpay";
-			rtpLine += " ! " + "udpsink buffer-size=10000000 host=127.0.0.1 port=" + port + " sync = false";
+			rtpLine += " ! " + "udpsink buffer-size=10000000 host=224.1.1.1 auto-multicast=true port=" + port + " sync = false";
 			Bin rtpBin = Bin.launch(rtpLine, true);
 			rtpBin.setName("rtpBin");
 
