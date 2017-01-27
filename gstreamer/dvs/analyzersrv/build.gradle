@@ -1,0 +1,38 @@
+repositories {
+	maven {
+       		url "http://repo1.maven.org/maven2"
+	}
+}        	
+buildscript {
+	ext {
+		springBootVersion = '1.4.2.RELEASE'
+	}
+        repositories {
+		maven {
+        		url "http://repo1.maven.org/maven2"
+    		}
+	}        	
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+	}
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+jar {
+	baseName = 'analyzersrv'
+	version = '0.0.1-SNAPSHOT'
+}
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+	compile group: 'net.java.dev.jna', name: 'jna', version: '4.0.0'
+	compile('org.openpnp:opencv:3.2.0-1')
+	compile project(':contracts')
+	compile('org.springframework.boot:spring-boot-starter-amqp')
+	compile('org.codehaus.jackson:jackson-mapper-asl:1.9.13')
+	testCompile('org.springframework.boot:spring-boot-starter-test')
+}

@@ -1,2 +1,2 @@
-include   ':contracts', ':apisrv', ':capturesrv'
+include   ':contracts', ':apisrv', ':capturesrv', 'analyzersrv'
 project(':contracts').projectDir = new File('contracts')
