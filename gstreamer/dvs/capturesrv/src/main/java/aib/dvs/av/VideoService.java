@@ -56,7 +56,9 @@ public class VideoService implements IVideoSevice, EOS {
 			String rtpLine = "queue leaky=1 name=rtpQueue";
 			rtpLine += " ! " + "jpegenc";
 			rtpLine += " ! " + "rtpjpegpay";
-			rtpLine += " ! " + "udpsink buffer-size=10000000 host=224.1.1.1 auto-multicast=true port=" + port + " sync = false";
+			rtpLine += " ! " + "udpsink buffer-size=10000000 host=224.1.1.1 auto-multicast=true";
+			rtpLine += isWindows() ? "" : " multicast-iface=lo"; 
+			rtpLine += " port=" + port + " sync = false";
 			Bin rtpBin = Bin.launch(rtpLine, true);
 			rtpBin.setName("rtpBin");
 
@@ -210,7 +212,7 @@ public class VideoService implements IVideoSevice, EOS {
 	private Bin createCaptureBin(String fileName) {
 		String pipeLine = "queue name=captureQueue" + (isWindows() ? " ! videoconvert" : "");
 		pipeLine += " ! video/x-raw, format=I420";
-		String savePath = (isWindows() ? "d:/Videos/" : "~/Videos/") + fileName;
+		String savePath = (isWindows() ? "d:/Videos/" : "/home/walther/Videos/") + fileName;
 		pipeLine += " ! x264enc ! mp4mux name=muxer ! filesink name=fs location=" + savePath;
 		Bin mp4Bin = Bin.launch(pipeLine, true);
 		mp4Bin.setName("mp4Bin");
