@@ -11,6 +11,7 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
@@ -31,15 +32,31 @@ public class RTPCaptureTask implements Runnable {
 	}
 	
 	@Override
-	public void run() {		
+	public void run() {
+		final double Threshold = 15.0; 
 		rtpReceiver.run(data -> {
 	    	try {
 	    		counter++;
+	    		int brightnessCounter = 0; 
 	    		if(counter % 5 == 0) {
 	    			byte[] bytes = new byte[data.remaining()];
 	    			data.get(bytes);
-	    			Mat image = Imgcodecs.imdecode(new MatOfByte(bytes), Imgcodecs.IMREAD_UNCHANGED);	    			
-	    			Imgcodecs.imwrite("d:\\Videos\\" + System.currentTimeMillis() + ".jpg", image);
+	    			Mat streamImg = Imgcodecs.imdecode(new MatOfByte(bytes), Imgcodecs.IMREAD_UNCHANGED);
+	    			Mat hsvImg = new Mat();	    			
+	    			Imgproc.cvtColor(streamImg, hsvImg, Imgproc.COLOR_RGB2HSV);
+					for( int y = 0; y < hsvImg.rows() - 1; y++ ) { 
+						for( int x = 0; x < hsvImg.cols() - 1; x++ ) { 
+							double[] point = hsvImg.get(y, x);
+							if(point[0] < Threshold && point[1] < Threshold && point[2] < Threshold)
+								brightnessCounter++;
+						}
+					}
+					
+					logger.info("brightnessCounter: " + brightnessCounter);
+					if(brightnessCounter > hsvImg.cols()*hsvImg.rows()*0.9) {
+						logger.info("The image is dark");
+					}
+//	    			Imgcodecs.imwrite("d:\\Videos\\" + System.currentTimeMillis() + ".jpg", image);
 	    		}
 	
 	    		return false;				
