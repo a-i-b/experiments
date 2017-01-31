@@ -30,6 +30,7 @@ targetCompatibility = 1.8
 
 dependencies {
 	compile files('../libs/opencv-320.jar.jar')	
+	compile files('../libs/gst1-java-core-0.9-161201.jar')	
 	compile group: 'net.java.dev.jna', name: 'jna', version: '4.0.0'
 	compile project(':contracts')
 	compile('org.springframework.boot:spring-boot-starter-amqp')
