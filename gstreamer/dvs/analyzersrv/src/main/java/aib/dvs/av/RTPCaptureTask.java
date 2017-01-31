@@ -14,7 +14,8 @@ public class RTPCaptureTask implements Runnable {
 	@Override
 	public void run() {
 		capture = new VideoCapture();
-		capture.open("udp://@224.1.1.1:5200");
+		capture.open("rtp://224.1.1.1:5200");
+		
 		if(!capture.isOpened()) {
 			logger.error("Can not open rtp stream!");
 			return;

@@ -56,8 +56,10 @@ public class RTPReceiver implements IRTPReceiver {
 	            		e.printStackTrace();
 	            		setErrorOnStream(true);
 		            } finally {
-	            		buffer.unmap();
-			            sample.dispose();
+	            		if(buffer != null)
+	            			buffer.unmap();
+	            		if(sample != null)
+	            			sample.dispose();
 		            }
 		            return FlowReturn.OK;
 				}
