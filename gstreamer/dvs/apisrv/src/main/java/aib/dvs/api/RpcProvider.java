@@ -86,22 +86,20 @@ public class RpcProvider {
 			WritableByteChannel channel = Channels.newChannel(outputStream);
 			rtpReceiver.run(data -> {
 		    	try {
-		    		if(outputStream != null) {
-			    		outputStream.write((
-								"--BoundaryString\r\n" +
-								"Content-type: image/jpeg\r\n" +
-								"Content-Length: " +
-								data.remaining() +
-								"\r\n\r\n").getBytes());	    		
-			    		channel.write(data);	    		
-						outputStream.write("\r\n\r\n".getBytes());				
-						outputStream.flush();
-		    		}
-		    		
+		    		outputStream.write((
+							"--BoundaryString\r\n" +
+							"Content-type: image/jpeg\r\n" +
+							"Content-Length: " +
+							data.remaining() +
+							"\r\n\r\n").getBytes());	    		
+		    		channel.write(data);	    		
+					outputStream.write("\r\n\r\n".getBytes());						    		
+					outputStream.flush();
 					return false;
 					
 				} catch (IOException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
+					rtpReceiver.stop();
 					return true;
 				}
 		    });	    

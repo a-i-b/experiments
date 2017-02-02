@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.log4j.Logger;
+import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfByte;
@@ -33,27 +34,28 @@ public class RTPCaptureTask implements Runnable {
 	
 	@Override
 	public void run() {
-		final double Threshold = 15.0; 
+		final double Threshold = 0.05; 
 		rtpReceiver.run(data -> {
 	    	try {
 	    		counter++;
-	    		int brightnessCounter = 0; 
+	    		int darkPointCounter = 0; 
 	    		if(counter % 5 == 0) {
 	    			byte[] bytes = new byte[data.remaining()];
 	    			data.get(bytes);
 	    			Mat streamImg = Imgcodecs.imdecode(new MatOfByte(bytes), Imgcodecs.IMREAD_UNCHANGED);
-	    			Mat hsvImg = new Mat();	    			
-	    			Imgproc.cvtColor(streamImg, hsvImg, Imgproc.COLOR_RGB2HSV);
+	    			Core.normalize(streamImg, streamImg, 1.0, 1.0, Core.NORM_INF);
+	    			Mat hsvImg = new Mat();
+	    			Imgproc.cvtColor(streamImg, hsvImg, Imgproc.COLOR_RGB2HSV_FULL);
 					for( int y = 0; y < hsvImg.rows() - 1; y++ ) { 
 						for( int x = 0; x < hsvImg.cols() - 1; x++ ) { 
 							double[] point = hsvImg.get(y, x);
-							if(point[0] < Threshold && point[1] < Threshold && point[2] < Threshold)
-								brightnessCounter++;
+							if(point[2] < Threshold)
+								darkPointCounter++;
 						}
 					}
 					
-					logger.info("brightnessCounter: " + brightnessCounter);
-					if(brightnessCounter > hsvImg.cols()*hsvImg.rows()*0.9) {
+//					logger.info("darkPointCounter: " + darkPointCounter + ", 90% of all pixels: " + hsvImg.cols()*hsvImg.rows()*0.9);
+					if(darkPointCounter > hsvImg.cols()*hsvImg.rows()*0.95) {
 						logger.info("The image is dark");
 					}
 //	    			Imgcodecs.imwrite("d:\\Videos\\" + System.currentTimeMillis() + ".jpg", image);
