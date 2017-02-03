@@ -34,7 +34,7 @@ public class RTPCaptureTask implements Runnable {
 	
 	@Override
 	public void run() {
-		final double Threshold = 0.05; 
+		final double Threshold = 0.70; 
 		rtpReceiver.run(data -> {
 	    	try {
 	    		counter++;
@@ -45,20 +45,21 @@ public class RTPCaptureTask implements Runnable {
 	    			Mat streamImg = Imgcodecs.imdecode(new MatOfByte(bytes), Imgcodecs.IMREAD_UNCHANGED);
 	    			Core.normalize(streamImg, streamImg, 1.0, 1.0, Core.NORM_INF);
 	    			Mat hsvImg = new Mat();
-	    			Imgproc.cvtColor(streamImg, hsvImg, Imgproc.COLOR_RGB2HSV_FULL);
+	    			Imgproc.cvtColor(streamImg, hsvImg, Imgproc.COLOR_RGB2HSV);
 					for( int y = 0; y < hsvImg.rows() - 1; y++ ) { 
 						for( int x = 0; x < hsvImg.cols() - 1; x++ ) { 
 							double[] point = hsvImg.get(y, x);
-							if(point[2] < Threshold)
+							if(point[2] > Threshold)
 								darkPointCounter++;
 						}
 					}
 					
 //					logger.info("darkPointCounter: " + darkPointCounter + ", 90% of all pixels: " + hsvImg.cols()*hsvImg.rows()*0.9);
-					if(darkPointCounter > hsvImg.cols()*hsvImg.rows()*0.95) {
+					if(darkPointCounter > hsvImg.cols()*hsvImg.rows()*0.70) {
 						logger.info("The image is dark");
+		    			Imgcodecs.imwrite("d:\\Videos\\" + System.currentTimeMillis() + "_dark.jpg", hsvImg);
 					}
-//	    			Imgcodecs.imwrite("d:\\Videos\\" + System.currentTimeMillis() + ".jpg", image);
+//	    			Imgcodecs.imwrite("d:\\Videos\\" + System.currentTimeMillis() + ".jpg", hsvImg);
 	    		}
 	
 	    		return false;				
