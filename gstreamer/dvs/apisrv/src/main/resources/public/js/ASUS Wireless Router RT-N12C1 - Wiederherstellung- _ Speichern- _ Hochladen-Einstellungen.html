@@ -1,0 +1,292 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0053)http://192.168.1.1/Advanced_SettingBackup_Content.asp -->
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
+
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<title>ASUS Wireless Router RT-N12C1 - Wiederherstellung- / Speichern- / Hochladen-Einstellungen</title>
+<link rel="stylesheet" type="text/css" href="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/index_style.css"> 
+<link rel="stylesheet" type="text/css" href="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/form_style.css">
+<link rel="stylesheet" type="text/css" href="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/other.css">
+
+<script type="text/javascript" src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/state.js"></script>
+<script type="text/javascript" src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/help.js"></script>
+<script type="text/javascript" src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/general.js"></script>
+<script type="text/javascript" src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/popup.js"></script>
+<script>
+wan_route_x = 'IP_Routed';
+wan_nat_x = '1';
+wan_proto = 'dhcp';
+sw_mode = '1';
+
+var varload = 0;
+var lan_ipaddr = '192.168.1.1';
+
+
+function initial(){
+	show_banner(1);
+	show_menu(5,6,3);	
+	show_footer();
+}
+
+function restoreRule(){
+	var alert_string = "Samtliche aktuellen Einstellungen werden geloscht, der Router wird auf die Werkseinstellungen zuruckgesetzt.\n";
+
+	if(sw_mode == "3")
+		alert_string += "Wir empfehlen Ihnen, das Asus-Dienstprogramm/Gerateerkennung zur Suche nach der IP des AP zu verwenden.";	
+	else{
+		if(lan_ipaddr != "192.168.1.1")
+			alert_string += "Die Standard-LAN-IP-Adresse RT-N12C1 lautet 192.168.1.1.\nFalls Sie die Einstellungsseite nicht wiederherstellen konnen, erneuern Sie bitte die IP-Konfiguration Ihres Computers.\n\n";			
+	}
+
+	alert_string += "Mochten Sie wirklich fortfahren?";
+
+	if(confirm(alert_string))
+	{
+		//showtext($("loading_text"), "Das System wird nun neu gestartet! Bitte warten Sie einen Moment; Sie werden zur Startseite des RT-N12C1 weitergeleitet.");
+		showLoading();
+		document.restoreform.submit();
+	}
+	else
+		return false;
+}
+
+function saveSetting(){
+	location.href='Settings.CFG';
+}
+
+function uploadSetting(){
+  var file_obj = document.form.file;
+	
+	alert("Wir empfehlen Ihnen, das Asus-Dienstprogramm/Gerateerkennung zur Suche nach der IP des AP zu verwenden.");
+	if(file_obj.value == ""){
+		alert("Felder durfen nicht leer sein!");
+		file_obj.focus();
+	}
+	else if(file_obj.value.length < 6 ||
+					file_obj.value.lastIndexOf(".CFG")  < 0 || 
+					file_obj.value.lastIndexOf(".CFG") != (file_obj.value.length)-4){		
+		alert("Dateiformat oder Pfad ungultig!");
+		file_obj.focus();
+	}
+	else{		
+		disableCheckChangedStatus();
+		showtext($("loading_text"), "Einstellungen werden hochgeladen! Bitte warten Sie etwa 90 Sekunden.");
+		document.form.submit();
+	}	
+}
+</script>
+</head>
+
+<body onload="initial();">
+<div id="TopBanner"><form method="post" name="titleForm" id="titleForm" action="http://192.168.1.1/result_of_get_changed_status.asp" target="hidden_frame">
+<input type="hidden" name="current_page" value="">
+<input type="hidden" name="sid_list" value="LANGUAGE;">
+<input type="hidden" name="action_mode" value=" Apply ">
+<input type="hidden" name="preferred_lang" value="">
+<input type="hidden" name="flag" value="">
+</form>
+<div class="banner1" align="center"></div>
+<table width="983" border="0" align="center" cellpadding="0" cellspacing="0">
+<tbody><tr>
+<td class="top-logo"><a href="http://192.168.1.1/"><div id="modelName">RT-N12C1</div></a></td>
+<td class="top-message">
+<span class="top-messagebold">2.4G: </span><input class="top_ssid" type="text" value="" id="elliptic_ssid" readonly="readonly" title="Biene-Julia"><span class="top-messagebold" id="index-ssid-5g-title" style="visibility: hidden;">5G: </span><input class="top_ssid" type="text" value="" id="elliptic_ssid_5g" readonly="readonly"><br><span class="top-messagebold">Firmware-Version: </span><a href="http://192.168.1.1/Advanced_FirmwareUpgrade_Content.asp"><span id="firmver" class="time">2.1.1.1.33</span></a>&nbsp;&nbsp;<br>
+<span class="top-messagebold" title="Der RT-N12C1 unterstutzt drei Betriebsmodi fur unterschiedliche Einsatzbedingungen. Bitte wahlen Sie den Modus, der am besten zu Ihrer Situation passt.">Betriebsmodus: </span><a href="http://192.168.1.1/OperationMode.asp"><span id="sw_mode_span" class="time">Router</span></a>
+</td>
+<td class="top-message" width="150">
+<span class="top-messagebold">Sprache:</span><br>
+<select name="select_lang" id="select_lang" class="top-input" onchange="change_language();">
+<option value="EN">English</option>
+<option value="TW">繁體中文</option>
+<option value="CN">简体中文</option>
+<option value="CZ">Česky</option>
+<option value="PL">Polski</option>
+<option value="RU">Pусский</option>
+<option value="DE" selected="">Deutsch</option>
+<option value="FR">Français</option>
+<option value="TR">Türkçe</option>
+<option value="TH">ไทย</option>
+<option value="MS">Malaysia</option>
+</select>
+<input type="button" id="change_lang_btn" class="button" value="OK" onclick="submit_language();" style="float:right; margin:5px 10px 0 0;" disabled="disabled">
+</td>
+<td class="top-message" width="120">
+<div id="logout_btn" class="buttonquit"><a style="text-decoration:none;" href="javascript:;" onclick="logout();">Abmelden</a></div>
+<div id="reboto_btn" class="buttonquit"><a style="text-decoration:none;" href="javascript:;" onclick="reboot();">Neustart</a></div>
+</td>
+<td id="Dr_body" class="top-message" width="40">
+<div id="dr" class="dr"></div>
+<div id="drsword" class="drsword">
+<span id="eventDescription"></span>
+<br>
+<a id="eventLink" href="javascript:void(0);"><span id="linkDescription"></span></a>
+</div>
+<div id="wordarrow" class="wordarrow"><img src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/wordarrow.png"></div>
+&nbsp;</td>
+<td width="11"><img src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/top-03.gif" width="11" height="78"></td>
+</tr></tbody></table>
+<div id="banner3" align="center"><img src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/top-advance.gif" width="983" height="19"></div>
+</div>
+
+<div id="LoadingBar" class="popup_bar_bg" style="background-image: url(/images/popup_bg2.gif);">
+<table cellpadding="5" cellspacing="0" id="loadingBarBlock" class="loadingBarBlock" align="center">
+	<tbody><tr>
+		<td height="80">
+		<div class="Bar_container">
+			<span id="proceeding_img_text"></span>
+			<div id="proceeding_img"></div>
+		</div>
+		<div id="loading_text" style="margin:5px auto; width:85%;">Das System wird nun neu gestartet! Bitte warten Sie einen Moment; Sie werden zur Startseite des RT-N12C1 weitergeleitet.</div>
+		</td>
+	</tr>
+</tbody></table>
+<!--[if lte IE 6.5]><iframe class="hackiframe"></iframe><![endif]-->
+</div>
+<div id="hiddenMask" class="popup_bg">
+	<table cellpadding="5" cellspacing="0" id="dr_sweet_advise" class="dr_sweet_advise" align="center">
+		<tbody><tr>
+		<td>
+			<div class="drword" id="drword">Bitte warten,  Fortfahren...
+				<br>
+				<br>
+		    </div>
+		  <div class="drImg"><img src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/DrsurfImg.gif"></div>
+			<div style="height:70px; "></div>
+		</td>
+		</tr>
+	</tbody></table>
+<!--[if lte IE 6.5]><iframe class="hackiframe"></iframe><![endif]-->
+</div>
+<div id="Loading" class="popup_bg" style="visibility: hidden;"><table cellpadding="5" cellspacing="0" id="loadingBlock" class="loadingBlock" align="center">
+<tbody><tr>
+<td width="20%" height="80" align="center"><img src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/loading.gif"></td>
+<td><span id="proceeding_main_txt">Bitte warten, </span><span id="proceeding_txt" style="color:#FFFFCC;"></span></td>
+</tr>
+</tbody></table>
+<!--[if lte IE 6.5]><iframe class="hackiframe"></iframe><![endif]-->
+</div>
+<!--for uniform show, useless but have exist-->
+
+<iframe name="hidden_frame" id="hidden_frame" src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/saved_resource.html" width="0" height="0" frameborder="0"></iframe>
+
+<form method="post" name="form" action="http://192.168.1.1/upload.cgi" target="hidden_frame" enctype="multipart/form-data">
+<input type="hidden" name="action_mode" value="">
+<input type="hidden" name="productid" value="RT-N12C1">
+<input type="hidden" name="current_page" value="Advanced_SettingBackup_Content.asp">
+<input type="hidden" name="next_page" value="Advanced_SettingBackup_Content.asp">
+<input type="hidden" name="preferred_lang" id="preferred_lang" value="DE">
+<input type="hidden" name="wl_ssid2" value="Biene-Julia">
+<input type="hidden" name="firmver" value="2.1.1.1">
+
+<table class="content" align="center" cellpadding="0" cellspacing="0">
+	<tbody><tr>
+		<td width="23">&nbsp;</td>
+		
+		<td valign="top" width="202">				
+		<div id="mainMenu"><div class="menu" id="option1"><a href="http://192.168.1.1/index.asp" title="index.asp">Netzwerkkarte</a></div>
+<div class="menu" id="option2"><a href="http://192.168.1.1/OperationMode.asp" title="OperationMode.asp">Betriebsmodus</a></div>
+<div class="menu" id="option4"><a href="http://192.168.1.1/EZQoS.asp" title="EZQoS.asp">EzQoS-<br> Bandbreite-<br> Management</a></div>
+<div class="menu" id="option5"><a href="http://192.168.1.1/ParentalControl.asp" title="ParentalControl.asp">Parental Control</a></div>
+<div class="menu" id="option6"><a href="http://192.168.1.1/as.asp" title="as.asp"><br>Erweiterte Einstellungen</a></div>
+</div>	
+		<div id="subMenu"><div class="submenu"><a href="http://192.168.1.1/Advanced_Wireless_Content.asp">Wireless</a></div>
+<div class="submenu"><a href="http://192.168.1.1/Advanced_LAN_Content.asp">LAN</a></div>
+<div class="submenu"><a href="http://192.168.1.1/Advanced_WAN_Content.asp">WAN</a></div>
+<div class="submenu"><a href="http://192.168.1.1/Advanced_BasicFirewall_Content.asp">Firewall</a></div>
+<div class="thissubmenu">Administration</div>
+<div class="submenu"><a href="http://192.168.1.1/Main_LogStatus_Content.asp">Systemprotokoll</a></div>
+<div><img src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/m-button-07end.gif" width="187" height="47"></div>
+</div>		
+		</td>				
+		
+    <td valign="top">
+	<div id="tabMenu" class="submenuBlock"><table border="0" cellspacing="0" cellpadding="0"><tbody><tr>
+<td class="b2"><a href="http://192.168.1.1/Advanced_System_Content.asp">System</a></td>
+<td class="b2"><a href="http://192.168.1.1/Advanced_FirmwareUpgrade_Content.asp">Firmware-Aktualisierung</a></td>
+<td class="b1">Wiederherstellung- / Speichern- / Hochladen-Einstellungen</td>
+</tr></tbody></table>
+</div><br>
+		<!--===================================Beginning of Main Content===========================================-->
+<table width="98%" border="0" align="center" cellpadding="0" cellspacing="0">
+	<tbody><tr>
+		<td align="left" valign="top">
+          
+		<table width="500" border="0" align="center" cellpadding="5" cellspacing="0" class="FormTitle">
+			<thead>
+			<tr>
+				<td>Administration - Wiederherstellung- / Speichern- / Hochladen-Einstellungen</td>
+			</tr>
+			</thead>	
+            <tbody><tr>
+              <td bgcolor="#FFFFFF">Mit dieser Funktion konnen Sie die aktuellen Einstellungen des RT-N12C1 in einer Datei speichern und spater wieder aus dieser Datei laden.</td>
+            </tr>
+            <tr>
+			  <td bgcolor="#FFFFFF">
+		<table width="500" border="1" align="center" cellpadding="6" cellspacing="0" bordercolor="#6b8fa3" class="FormTable">
+          <tbody><tr>
+            <th width="25%" align="right" bgcolor="#7aa3bd"><a class="hintstyle" href="javascript:void(0);" onclick="openHint(19,1)">Werkseinstellungen</a></th>
+            <td>
+              <input class="button" onclick="restoreRule();" type="button" value="Wiederherstellen" name="action1">
+              <input type="hidden" name="wl_gmode_protection_x" value="1"></td>
+          </tr>
+          <tr>
+            <th align="right" bgcolor="#7aa3bd"><a class="hintstyle" href="javascript:void(0);" onclick="openHint(19,2)">Einstellungen speichern</a></th>
+            <td>
+              <input class="button" onclick="saveSetting();" type="button" value="Speichern" name="action2">
+            </td>
+          </tr>
+          <tr bgcolor="#a7d2e2">
+            <th align="right" bgcolor="#7aa3bd"><a class="hintstyle" href="javascript:void(0);" onclick="openHint(19,3)">Einstellungen wiederherstellen</a></th>
+            <td>
+			  			<input name="uploadbutton" type="button" class="button" onclick="uploadSetting();" value="Hochladen">
+              <input type="file" name="file" class="input" size="30">
+            </td>
+          </tr>
+        </tbody></table>
+			  </td>
+            </tr>
+		</tbody></table>
+		</td>
+
+          <td id="help_td" style="width:15px;" valign="top">
+            <div id="helpicon" onclick="openHint(0,0);" title="Zum Offnen der Hilfe anklicken."><img src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/help.gif"></div>
+            <div id="hintofPM" style="display:none;">
+              <table width="100%" cellpadding="0" cellspacing="1" class="Help" bgcolor="#999999">
+			  	<thead>
+                <tr>
+                  <td><div id="helpname" class="AiHintTitle">Hilfe</div><a href="javascript:void(0);" onclick="closeHint()"><img src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/button-close.gif" class="closebutton"></a></td>
+                </tr>
+				</thead>
+                <tbody><tr>				
+                  <td valign="top">
+  				    <div class="hint_body2" id="hint_body">In der Hilfe finden Sie Richtlinien und Informationen zur Nutzung der Router-Funktionen.  Klicken Sie auf die <a class="hintstyle" style="background-color:#7aa3bd">gelb und blau unterstrichenen verlinkten Worter.</a> zum Aufrufen der Hilfe.</div>
+  				    <iframe id="statusframe" name="statusframe" class="statusframe" src="./ASUS Wireless Router RT-N12C1 - Wiederherstellung- _ Speichern- _ Hochladen-Einstellungen_files/saved_resource(1).html" frameborder="0"></iframe>
+				</td>
+                </tr>
+              </tbody></table>
+          </div>
+		  </td>
+        </tr>
+      </tbody></table>		
+	</td>
+		
+    <td width="10" align="center" valign="top">&nbsp;</td>
+	</tr>
+</tbody></table>
+
+<div id="footer"><div align="center" class="bottom-image"></div>
+<div align="center" class="copyright">2011 ASUSTek Computer Inc. Alle Rechte vorbehalten.</div>
+</div>
+
+<form method="post" name="restoreform" action="http://192.168.1.1/apply.cgi" target="hidden_frame">
+<input type="hidden" name="action_mode" value="Restore">
+<input type="hidden" name="next_page" value="">
+<input type="hidden" name="sid_list" value="General;">
+</form></form>
+
+<form name="hint_form"></form>
+
+
+</body></html>
