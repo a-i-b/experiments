@@ -1,0 +1,101 @@
+
+<!-- saved from url=(0051)http://192.168.1.1/result_of_get_changed_status.asp -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+<script>
+function get_client_status_changed(){
+    return 917;
+}
+
+function get_disk_status_changed(){
+    return 0;
+}
+
+function get_mount_status_changed(){
+    return 0;
+}
+
+
+function printer_manufacturers() {
+ return [];
+}
+function printer_models() {
+ return [];
+}
+function printer_serialn() {
+ return [];
+}
+function printer_pool() {
+ return [""];
+}
+
+function wanlink_status() { return 1;}
+function wanlink_statusstr() { return 'Connected';}
+function wanlink_type() { return 'Automatic IP';}
+function wanlink_ipaddr() { return '92.206.221.247';}
+function wanlink_netmask() { return '255.255.254.0';}
+function wanlink_gateway() { return '92.206.220.1';}
+function wanlink_dns() { return '217.68.161.141 217.68.161.171 8.8.8.8';}
+
+
+var flag = '';
+
+var manually_stop_wan = '';
+var ifWANConnect = "1";
+var wan_status_log = "";
+var detect_dhcp_pppoe = "dhcp";
+var detect_wan_conn = '1';
+var wan_ipaddr_t = '92.206.221.247';
+
+var wireless = [["30:10:B3:5D:EC:86", "Yes", "Yes"], ["98:E0:D9:89:A9:8D", "No", "No"], ["AC:CF:5C:8B:03:B9", "Yes", "Yes"], ["80:A5:89:0F:FB:73", "Yes", "Yes"], ["88:A7:3C:EE:18:DF", "Yes", "Yes"], ["E0:C7:67:D0:1D:90", "Yes", "Yes"], ["F4:37:B7:5B:5C:CC", "Yes", "Yes"]];	// [[MAC, associated, authorized], ...]
+
+var qos_global_enable = '0';
+var qos_userdef_enable = '0';
+var qos_ubw = '1714.82';
+var qos_manual_ubw = '0';
+var qos_ready = 1;
+if((qos_global_enable == '1' || qos_userdef_enable == '1')
+		&& qos_ubw == '0'
+		&& (qos_manual_ubw == '0' || qos_manual_ubw == ''))
+	qos_ready = 0;
+
+function initial(){
+	if(flag == "initial")
+		parent.initial_change_status(manually_stop_wan,
+                                 ifWANConnect,
+                                 wanlink_statusstr(),
+                                 detect_dhcp_pppoe,
+                                 wan_status_log,
+                                 get_disk_status_changed(),
+                                 get_mount_status_changed(),																 
+                                 printer_models()[0],
+                                 wireless,
+                                 qos_ready,
+                                 detect_wan_conn,
+                                 wan_ipaddr_t	
+                                 );
+	else
+		parent.set_changed_status(manually_stop_wan,
+                              ifWANConnect,
+                              wanlink_statusstr(),
+                              detect_dhcp_pppoe,
+                              wan_status_log,
+                              get_disk_status_changed(),
+                              get_mount_status_changed(),															
+                              printer_models()[0],
+                              wireless,
+                              detect_wan_conn,
+                              wan_ipaddr_t
+                              );
+	
+	parent.check_changed_status(flag);
+}
+</script>
+</head>
+
+<body onload="initial();">
+
+
+</body></html>

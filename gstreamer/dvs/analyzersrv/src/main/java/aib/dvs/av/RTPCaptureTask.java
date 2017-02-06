@@ -48,6 +48,10 @@ public class RTPCaptureTask implements Runnable {
 					
 					if(darkPointCounter > (int)(grayImg.cols()*grayImg.rows()*0.90)) {
 						logger.info("The image is dark");
+						if(!currentState)
+						{
+						
+						}
 					}
 	    		}
 	

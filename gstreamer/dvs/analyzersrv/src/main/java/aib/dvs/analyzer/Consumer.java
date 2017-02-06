@@ -19,11 +19,4 @@ public class Consumer {
 		this.taskExecutor = taskExecutor;
 		this.taskExecutor.execute(task);
 	}	
-
-	@RabbitListener(queues = "q.capture")
-    public IEvent onMessage(ICommand command) throws InterruptedException {
-
-		
-		return null;
-    }
 }
