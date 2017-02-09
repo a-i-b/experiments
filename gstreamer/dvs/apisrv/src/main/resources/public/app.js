@@ -4,7 +4,7 @@ angular.module('rmq.app', [])
     $scope.captureStateText = "Start";
     $scope.captureState = false;
     $scope.previewState = false;
-    $scope.responses = [];
+    $scope.events = [];
     $scope.stompClient = null;
     $scope.resolutions = ['640x480@30', '800x600@30', '1280x720@30', '1280x720@11', '1920x1080@25', '1920x1080@30'];
     $scope.img_src = "api/mjpeg";
@@ -31,7 +31,7 @@ angular.module('rmq.app', [])
 
     $scope.showMessage = function(message)  {
     	console.log(message);
-    	$scope.responses.push(message)    
+    	$scope.events.push(message)    
     }
     
     function connect() {
@@ -53,5 +53,6 @@ angular.module('rmq.app', [])
     	  var strTime = hours + '' + minutes + '' + date.getSeconds();
     	  return date.getFullYear() + '' + date.getMonth()+1 + '' + date.getDate() + '_' + "  " + strTime;
     }
-   // connect();
+   
+    connect();
 })

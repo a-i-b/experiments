@@ -5,6 +5,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
 
+import aib.dvs.capture.contract.AnalyzerEvent;
 import aib.dvs.capture.contract.PreviewStateChanged;
 
 @Component
@@ -18,7 +19,7 @@ public class WebSocketController {
 	}
 	
 	@RabbitListener(queues = "q.ws")
-    public void onNewMessage(PreviewStateChanged message) {
+    public void onNewMessage(AnalyzerEvent message) {
     	messagingTemplate.convertAndSend("/topic/messages", message);
     }	
 }

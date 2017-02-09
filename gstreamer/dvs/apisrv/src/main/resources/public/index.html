@@ -33,14 +33,19 @@
 	       <td><button ng-click="onChangeCaptureState()">{{captureStateText}}</button></td>
 	   </tr>
 	</table>
-	<div ng-show="previewState">
-		<img alt="Herr" ng-src="{{image_url}}" />	
+	<div class="row">
+		<div ng-show="previewState" class="col-md-4">
+			<img alt="Herr" ng-src="{{image_url}}" />	
+		</div>
+		<div class="col-md-4">
+		<table>
+	       <tr ng-repeat="event in events" >
+	           <td>{{event.eventText}}</td>
+	           <td>{{event.evenTime}}</td>
+	       </tr>
+	    </table>
+		</div>
 	</div>
-	<table>
-       <tr ng-repeat="response in responses" >
-           <td>{{response.greeting}}</td>
-       </tr>
-    </table>
     </div>
   </div>
   <script src="js/stomp.min.js"></script>

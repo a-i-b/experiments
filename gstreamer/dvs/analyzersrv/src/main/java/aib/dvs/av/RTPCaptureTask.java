@@ -1,5 +1,7 @@
 package aib.dvs.av;
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -10,15 +12,22 @@ import org.opencv.videoio.VideoCapture;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
+import aib.dvs.analyzer.AppConfig;
+import aib.dvs.capture.contract.AnalyzerEvent;
+
 @Service
 public class RTPCaptureTask implements Runnable {
 	static Logger logger = Logger.getLogger(RTPCaptureTask.class);
 	
-	private VideoCapture capture;	
 	private RabbitTemplate rabbitRpcTemplate;
 	private IRTPReceiver rtpReceiver;
 	
-	private long counter = 0;
+	private long frameCounter = 0;
+	private long darkCounter = 0;
+	private long brightCounter = 0;
+	
+	
+	private boolean currentState = false;
 
 	public RTPCaptureTask(RabbitTemplate rabbitRpcTemplate, IRTPReceiver rtpReceiver) {
 		this.rabbitRpcTemplate = rabbitRpcTemplate;
@@ -30,9 +39,9 @@ public class RTPCaptureTask implements Runnable {
 		final double Threshold = 40; 
 		rtpReceiver.run(data -> {
 	    	try {
-	    		counter++;
+	    		frameCounter++;
 	    		int darkPointCounter = 0;
-	    		if(counter % 5 == 0) {
+	    		if(frameCounter % 5 == 0) {
 	    			byte[] bytes = new byte[data.remaining()];
 	    			data.get(bytes);
 	    			Mat streamImg = Imgcodecs.imdecode(new MatOfByte(bytes), Imgcodecs.IMREAD_UNCHANGED);
@@ -47,11 +56,27 @@ public class RTPCaptureTask implements Runnable {
 					}
 					
 					if(darkPointCounter > (int)(grayImg.cols()*grayImg.rows()*0.90)) {
-						logger.info("The image is dark");
-						if(!currentState)
-						{
-						
+						brightCounter = 0;
+						darkCounter++;
+						if(darkCounter > 3 && !currentState) {
+							logger.info("The image is dark");
+							AnalyzerEvent event = new AnalyzerEvent();
+							event.setEventText("Image is dark");
+							event.setEventTime(new Date());
+							rabbitRpcTemplate.convertAndSend(AppConfig.QueueNameWs, event);
+							currentState = true;
 						}
+					} else {
+						darkCounter = 0;
+						brightCounter++;
+						if(brightCounter > 3 && currentState) {
+							logger.info("The image is bright");
+							AnalyzerEvent event = new AnalyzerEvent();
+							event.setEventText("Image is bright");
+							event.setEventTime(new Date());
+							rabbitRpcTemplate.convertAndSend(AppConfig.QueueNameWs, event);
+							currentState = false;
+						}						
 					}
 	    		}
 	
