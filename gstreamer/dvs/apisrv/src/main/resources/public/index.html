@@ -12,7 +12,7 @@
 </head>
 
 <body ng-app="rmq.app" >
-  <div class="container">
+  <div class=container>
     <h1>AV-Web</h1>
     <div ng-controller="home" ng-cloak class="ng-cloak">
 	<table class="table">
@@ -33,20 +33,16 @@
 	       <td><button ng-click="onChangeCaptureState()">{{captureStateText}}</button></td>
 	   </tr>
 	</table>
-	<div class="row">
-		<div ng-show="previewState" class="col-md-4">
-			<img alt="Herr" ng-src="{{image_url}}" />	
-		</div>
-		<div class="col-md-4">
-		<table>
-	       <tr ng-repeat="event in events" >
-	           <td>{{event.eventText}}</td>
-	           <td>{{event.evenTime}}</td>
-	       </tr>
-	    </table>
-		</div>
+	<div ng-show="previewState">
+		<img alt="Herr" ng-src="{{image_url}}"/>	
 	</div>
-    </div>
+	<table class="table">
+       <tr ng-repeat="event in events" >
+           <td>{{event.eventText}}</td>
+           <td>{{event.eventTime}}</td>
+       </tr>
+    </table>
+   </div>
   </div>
   <script src="js/stomp.min.js"></script>
   <script src="js/angular.min.js" type="text/javascript"></script>

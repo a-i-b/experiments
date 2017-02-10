@@ -98,8 +98,6 @@ public class RpcProvider {
 					return false;
 					
 				} catch (IOException e) {
-//					e.printStackTrace();
-					rtpReceiver.stop();
 					return true;
 				}
 		    });	    
@@ -115,6 +113,9 @@ public class RpcProvider {
 		} catch (IOException e) {
 			rtpReceiver.stop();
 			logger.info("Exit streaming...");
-		}		
+		} finally {
+			rtpReceiver.stop();
+		}
+		
 	}
 }

@@ -40,7 +40,7 @@ public class RTPReceiver implements IRTPReceiver {
 	    	
 	    	final AppSink  appsink = (AppSink)ElementFactory.make("appsink", "sink");
 	    	appsink.set("emit-signals", true);
-	    	appsink.set("sync", false);
+//	    	appsink.set("sync", false);
 	    	appsink.connect(new AppSink.NEW_SAMPLE() {				
 				public FlowReturn newSample(AppSink elem) {
 					Sample sample = null;

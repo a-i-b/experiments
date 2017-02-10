@@ -53,6 +53,6 @@ angular.module('rmq.app', [])
     	  var strTime = hours + '' + minutes + '' + date.getSeconds();
     	  return date.getFullYear() + '' + date.getMonth()+1 + '' + date.getDate() + '_' + "  " + strTime;
     }
-   
+
     connect();
 })

@@ -1,5 +1,6 @@
 package aib.dvs.av;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -26,6 +27,7 @@ public class RTPCaptureTask implements Runnable {
 	private long darkCounter = 0;
 	private long brightCounter = 0;
 	
+	private SimpleDateFormat sdp = new SimpleDateFormat("dd.mm.yyyy hh:MM:ss");
 	
 	private boolean currentState = false;
 
@@ -62,7 +64,7 @@ public class RTPCaptureTask implements Runnable {
 							logger.info("The image is dark");
 							AnalyzerEvent event = new AnalyzerEvent();
 							event.setEventText("Image is dark");
-							event.setEventTime(new Date());
+							event.setEventTime(sdp.format(new Date()));
 							rabbitRpcTemplate.convertAndSend(AppConfig.QueueNameWs, event);
 							currentState = true;
 						}
@@ -73,7 +75,7 @@ public class RTPCaptureTask implements Runnable {
 							logger.info("The image is bright");
 							AnalyzerEvent event = new AnalyzerEvent();
 							event.setEventText("Image is bright");
-							event.setEventTime(new Date());
+							event.setEventTime(sdp.format(new Date()));
 							rabbitRpcTemplate.convertAndSend(AppConfig.QueueNameWs, event);
 							currentState = false;
 						}						
