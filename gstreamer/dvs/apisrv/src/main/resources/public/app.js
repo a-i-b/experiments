@@ -35,8 +35,19 @@ angular.module('rmq.app', [])
     }
     
     function connect() {
-    	var socket = new WebSocket('ws://localhost:8080/myws');
-    	$scope.stompClient = Stomp.over(socket);    	
+    	var loc = window.location, new_uri;
+    	if (loc.protocol === "https:") {
+    	    new_uri = "wss:";
+    	} else {
+    	    new_uri = "http:";
+    	}
+    	new_uri += "//" + loc.host;
+    	new_uri += loc.pathname + "myws";
+    	
+//    	var socket = new WebSocket(new_uri);    	  
+//    	$scope.stompClient = Stomp.over(socket);    	
+
+    	$scope.stompClient = Stomp.over(new SockJS(new_uri));
     	$scope.stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             $scope.stompClient.subscribe('/topic/messages', function (data) {
@@ -44,7 +55,7 @@ angular.module('rmq.app', [])
             		 $scope.showMessage(JSON.parse(data.body));
             	});
             });
-        });        
+        });                
     }
   
     function formatDate(date) {
